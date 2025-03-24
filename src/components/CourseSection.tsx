@@ -9,8 +9,7 @@ const courses = [
     id: 1,
     title: "Toán học",
     description: "Khám phá toán học từ cơ bản đến nâng cao với phương pháp giải bài tập hiệu quả.",
-    level: "Lớp
-    6-12",
+    level: "Lớp 6-12",
     lessons: 42,
     duration: "36 giờ",
     rating: 4.9,

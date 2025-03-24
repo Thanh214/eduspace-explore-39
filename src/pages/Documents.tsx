@@ -270,8 +270,8 @@ const Documents = () => {
                 </div>
                 
                 <Select
-                  value={selectedSubject || ""}
-                  onValueChange={(value) => setSelectedSubject(value || null)}
+                  value={selectedSubject || "all"}
+                  onValueChange={(value) => setSelectedSubject(value === "all" ? null : value)}
                 >
                   <SelectTrigger className="w-full md:w-[180px]">
                     <div className="flex items-center">
@@ -280,7 +280,7 @@ const Documents = () => {
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tất cả môn học</SelectItem>
+                    <SelectItem value="all">Tất cả môn học</SelectItem>
                     {subjects.map((subject) => (
                       <SelectItem key={subject} value={subject}>{subject}</SelectItem>
                     ))}

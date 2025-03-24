@@ -1,563 +1,445 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { File, FileText, Download, Search, Filter, Bookmark, Eye, ChevronDown, ArrowUpDown } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Download, FileText, Search, Filter, Tag, Clock, Calendar, CreditCard, Wallet, Plus } from "lucide-react";
+import { 
+  Card, 
+  CardContent, the 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// Sample documents data
+// Mocked documents data
 const documentsData = [
   {
     id: 1,
     title: "Đề thi thử THPT Quốc Gia môn Toán năm 2023",
-    description: "Bộ đề thi thử THPT Quốc Gia môn Toán có đáp án và lời giải chi tiết.",
-    type: "Đề thi",
-    subject: "Toán học",
-    grade: "Lớp 12",
-    date: "15/06/2023",
-    views: 2450,
-    downloads: 1280,
-    fileSize: "2.3 MB",
-    fileType: "PDF"
+    description: "Bộ đề thi thử THPT Quốc Gia môn Toán với đáp án và hướng dẫn giải chi tiết",
+    subject: "Toán",
+    date: "2023-05-15",
+    downloads: 1245,
+    fileType: "PDF",
+    fileSize: "2.4 MB",
+    price: 20000,
+    tags: ["đề thi", "THPT", "toán học"]
   },
   {
     id: 2,
-    title: "Sách bài tập Tiếng Anh lớp 11",
-    description: "Sách bài tập Tiếng Anh lớp 11 bổ trợ chương trình học chuẩn.",
-    type: "Sách",
+    title: "Tài liệu ôn thi THPT Quốc Gia môn Tiếng Anh",
+    description: "Tổng hợp ngữ pháp, từ vựng và các dạng bài tập thường gặp trong đề thi THPT Quốc Gia",
     subject: "Tiếng Anh",
-    grade: "Lớp 11",
-    date: "10/05/2023",
-    views: 1850,
-    downloads: 950,
-    fileSize: "15.6 MB",
-    fileType: "PDF"
+    date: "2023-06-10",
+    downloads: 987,
+    fileType: "PDF",
+    fileSize: "3.8 MB",
+    price: 25000,
+    tags: ["tài liệu", "THPT", "tiếng anh"]
   },
   {
     id: 3,
-    title: "Ngữ văn 12 - Phân tích tác phẩm Truyện Kiều",
-    description: "Tài liệu phân tích chi tiết tác phẩm Truyện Kiều của Nguyễn Du.",
-    type: "Tài liệu",
-    subject: "Văn học",
-    grade: "Lớp 12",
-    date: "20/05/2023",
-    views: 3200,
-    downloads: 1560,
-    fileSize: "1.8 MB",
-    fileType: "PDF"
+    title: "Bộ đề cương ôn tập môn Vật Lý lớp 12",
+    description: "Đề cương ôn tập môn Vật Lý dành cho học sinh lớp 12 chuẩn bị cho kỳ thi THPT Quốc Gia",
+    subject: "Vật Lý",
+    date: "2023-04-22",
+    downloads: 756,
+    fileType: "PDF",
+    fileSize: "1.9 MB",
+    price: 15000,
+    tags: ["đề cương", "vật lý", "lớp 12"]
   },
   {
     id: 4,
-    title: "Bộ sưu tập bài tập Vật lý chọn lọc lớp 12",
-    description: "Tổng hợp các bài tập Vật lý khó và hay có lời giải chi tiết.",
-    type: "Bài tập",
-    subject: "Vật lý",
-    grade: "Lớp 12",
-    date: "05/06/2023",
-    views: 1750,
-    downloads: 820,
-    fileSize: "3.5 MB",
-    fileType: "PDF"
+    title: "Bài giảng Hóa học chương Hidrocacbon",
+    description: "Bài giảng chi tiết về chương Hidrocacbon trong chương trình Hóa học lớp 11",
+    subject: "Hóa Học",
+    date: "2023-03-18",
+    downloads: 602,
+    fileType: "PPTX",
+    fileSize: "4.2 MB",
+    price: 18000,
+    tags: ["bài giảng", "hóa học", "lớp 11"]
   },
   {
     id: 5,
-    title: "Hóa học 11 - Chuyên đề Hóa hữu cơ",
-    description: "Tài liệu tổng hợp kiến thức và bài tập về Hóa hữu cơ lớp 11.",
-    type: "Chuyên đề",
-    subject: "Hóa học",
-    grade: "Lớp 11",
-    date: "12/06/2023",
-    views: 1350,
-    downloads: 680,
-    fileSize: "2.7 MB",
-    fileType: "PDF"
+    title: "Tuyển tập bài tập Ngữ Văn lớp 10",
+    description: "Tổng hợp các bài tập và đề kiểm tra Ngữ Văn dành cho học sinh lớp 10",
+    subject: "Ngữ Văn",
+    date: "2023-02-25",
+    downloads: 489,
+    fileType: "DOCX",
+    fileSize: "1.6 MB",
+    price: 12000,
+    tags: ["bài tập", "ngữ văn", "lớp 10"]
   },
   {
     id: 6,
-    title: "Sinh học 12 - Ôn tập di truyền học",
-    description: "Tổng hợp lý thuyết và bài tập di truyền học chuẩn bị cho kỳ thi THPT Quốc Gia.",
-    type: "Ôn tập",
-    subject: "Sinh học",
-    grade: "Lớp 12",
-    date: "18/06/2023",
-    views: 1620,
-    downloads: 790,
-    fileSize: "4.1 MB",
-    fileType: "PDF"
-  },
-  {
-    id: 7,
-    title: "Bài giảng Lịch sử Việt Nam 1945-1975",
-    description: "Bài giảng chi tiết về lịch sử Việt Nam giai đoạn 1945-1975.",
-    type: "Bài giảng",
-    subject: "Lịch sử",
-    grade: "Lớp 12",
-    date: "08/06/2023",
-    views: 1480,
-    downloads: 720,
-    fileSize: "5.2 MB",
-    fileType: "PDF"
-  },
-  {
-    id: 8,
-    title: "Địa lý 11 - Địa lý tự nhiên Việt Nam",
-    description: "Tài liệu tổng hợp về địa lý tự nhiên Việt Nam dành cho học sinh lớp 11.",
-    type: "Tài liệu",
-    subject: "Địa lý",
-    grade: "Lớp 11",
-    date: "25/05/2023",
-    views: 1280,
-    downloads: 610,
-    fileSize: "3.8 MB",
-    fileType: "PDF"
+    title: "Giáo án Sinh học lớp 9 - Học kỳ 2",
+    description: "Giáo án chi tiết môn Sinh học lớp 9 dành cho học kỳ 2 theo chương trình mới",
+    subject: "Sinh Học",
+    date: "2023-01-30",
+    downloads: 375,
+    fileType: "PDF",
+    fileSize: "2.1 MB",
+    price: 22000,
+    tags: ["giáo án", "sinh học", "lớp 9"]
   }
 ];
 
-// Filter options
-const subjects = ["Tất cả", "Toán học", "Tiếng Anh", "Văn học", "Vật lý", "Hóa học", "Sinh học", "Lịch sử", "Địa lý"];
-const grades = ["Tất cả", "Lớp 10", "Lớp 11", "Lớp 12"];
-const types = ["Tất cả", "Đề thi", "Sách", "Tài liệu", "Bài tập", "Chuyên đề", "Ôn tập", "Bài giảng"];
-
 const Documents = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("Tất cả");
-  const [selectedGrade, setSelectedGrade] = useState("Tất cả");
-  const [selectedType, setSelectedType] = useState("Tất cả");
-  const [showFilters, setShowFilters] = useState(false);
-  const [sortOption, setSortOption] = useState("newest");
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState("newest");
+  const [documents, setDocuments] = useState(documentsData);
+  const [selectedDocument, setSelectedDocument] = useState<typeof documentsData[0] | null>(null);
+  const [userBalance, setUserBalance] = useState(50000); // User balance in VND
 
-  // Filter documents based on search, subject, grade, and type
-  const filteredDocuments = documentsData.filter((doc) => {
-    const matchesSearch = 
-      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      doc.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesSubject = selectedSubject === "Tất cả" || doc.subject === selectedSubject;
-    const matchesGrade = selectedGrade === "Tất cả" || doc.grade === selectedGrade;
-    const matchesType = selectedType === "Tất cả" || doc.type === selectedType;
-    
-    return matchesSearch && matchesSubject && matchesGrade && matchesType;
+  // Filter documents based on search term and subject
+  const filteredDocuments = documents.filter(doc => {
+    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          doc.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSubject = !selectedSubject || doc.subject === selectedSubject;
+    return matchesSearch && matchesSubject;
   });
 
-  // Helper function to convert date string to Date object
-  const parseDate = (dateString: string): Date => {
-    const [day, month, year] = dateString.split('/').map(Number);
-    return new Date(year, month - 1, day);
+  // Sort documents
+  const sortedDocuments = [...filteredDocuments].sort((a, b) => {
+    const parseDate = (dateStr: string): Date => new Date(dateStr);
+    
+    if (sortBy === "newest") {
+      return parseDate(b.date).getTime() - parseDate(a.date).getTime();
+    } else if (sortBy === "oldest") {
+      return parseDate(a.date).getTime() - parseDate(b.date).getTime();
+    } else if (sortBy === "downloads") {
+      return b.downloads - a.downloads;
+    } else if (sortBy === "price_low") {
+      return a.price - b.price;
+    } else if (sortBy === "price_high") {
+      return b.price - a.price;
+    }
+    return 0;
+  });
+
+  // Get unique subjects
+  const subjects = Array.from(new Set(documents.map(doc => doc.subject)));
+
+  // Handle downloading a document
+  const handleDownload = (document: typeof documentsData[0]) => {
+    if (userBalance >= document.price) {
+      setUserBalance(prev => prev - document.price);
+      toast({
+        title: "Tải tài liệu thành công",
+        description: `${document.title} đã được tải xuống.`,
+      });
+    } else {
+      toast({
+        title: "Số dư không đủ",
+        description: "Vui lòng nạp thêm tiền để tải tài liệu này.",
+        variant: "destructive"
+      });
+    }
   };
 
-  // Sort documents based on sort option
-  const sortedDocuments = [...filteredDocuments].sort((a, b) => {
-    switch (sortOption) {
-      case "newest":
-        return parseDate(b.date).getTime() - parseDate(a.date).getTime();
-      case "oldest":
-        return parseDate(a.date).getTime() - parseDate(b.date).getTime();
-      case "most_viewed":
-        return b.views - a.views;
-      case "most_downloaded":
-        return b.downloads - a.downloads;
-      default:
-        return 0;
-    }
-  });
+  // Format price to VND
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+  };
 
-  // Get document icon based on document type
-  const getDocumentIcon = (type: string) => {
-    switch (type) {
-      case "Đề thi":
-        return <File className="w-8 h-8 text-red-500" />;
-      case "Sách":
-        return <FileText className="w-8 h-8 text-blue-500" />;
-      case "Tài liệu":
-        return <FileText className="w-8 h-8 text-green-500" />;
-      case "Bài tập":
-        return <File className="w-8 h-8 text-purple-500" />;
-      case "Chuyên đề":
-        return <FileText className="w-8 h-8 text-orange-500" />;
-      case "Ôn tập":
-        return <FileText className="w-8 h-8 text-teal-500" />;
-      case "Bài giảng":
-        return <FileText className="w-8 h-8 text-indigo-500" />;
-      default:
-        return <FileText className="w-8 h-8 text-gray-500" />;
-    }
+  // Handle adding credits
+  const handleAddCredit = (amount: number) => {
+    setUserBalance(prev => prev + amount);
+    toast({
+      title: "Nạp tiền thành công",
+      description: `Bạn đã nạp thành công ${formatPrice(amount)}.`,
+    });
   };
 
   return (
     <>
       <Navbar />
       <div className="bg-gray-50 min-h-screen">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <div className="text-center">
-              <motion.h1 
-                className="text-3xl md:text-4xl font-display font-bold"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                Tài liệu học tập
-              </motion.h1>
-              <motion.p 
-                className="mt-4 text-lg md:text-xl text-teal-100 max-w-3xl mx-auto"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                Kho tài liệu học tập phong phú với hơn 10,000 tài liệu chất lượng từ nhiều môn học khác nhau
-              </motion.p>
-            </div>
-            
-            <motion.div 
-              className="mt-8 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="relative bg-white rounded-full shadow-md flex items-center p-1">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <Input
-                  type="text"
-                  placeholder="Tìm kiếm tài liệu..."
-                  className="border-none focus-visible:ring-0 pl-10 rounded-full py-6"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <Button className="rounded-full">
-                  Tìm kiếm
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-        
-        {/* Documents List Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-display font-bold text-gray-900">Thư viện tài liệu</h2>
-              <p className="text-gray-600 mt-1">Tìm thấy {filteredDocuments.length} tài liệu</p>
+              <h1 className="text-3xl font-display font-bold text-gray-900">Tài liệu học tập</h1>
+              <p className="mt-2 text-gray-600">
+                Khám phá và tải về các tài liệu học tập chất lượng
+              </p>
             </div>
             
-            <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Bộ lọc
-                <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-              </Button>
-              
-              <div className="relative">
-                <Button
-                  variant="outline"
-                  className="flex items-center"
-                  onClick={() => {
-                    const menu = document.getElementById("sort-menu");
-                    if (menu) {
-                      menu.classList.toggle("hidden");
-                    }
-                  }}
-                >
-                  <ArrowUpDown className="w-4 h-4 mr-2" />
-                  Sắp xếp
-                  <ChevronDown className="w-4 h-4 ml-2" />
-                </Button>
-                
-                <div
-                  id="sort-menu"
-                  className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-10 hidden"
-                >
-                  <div className="py-1">
-                    <button
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        sortOption === "newest" ? "bg-teal-50 text-teal-600" : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                      onClick={() => {
-                        setSortOption("newest");
-                        document.getElementById("sort-menu")?.classList.add("hidden");
-                      }}
-                    >
-                      Mới nhất
-                    </button>
-                    <button
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        sortOption === "oldest" ? "bg-teal-50 text-teal-600" : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                      onClick={() => {
-                        setSortOption("oldest");
-                        document.getElementById("sort-menu")?.classList.add("hidden");
-                      }}
-                    >
-                      Cũ nhất
-                    </button>
-                    <button
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        sortOption === "most_viewed" ? "bg-teal-50 text-teal-600" : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                      onClick={() => {
-                        setSortOption("most_viewed");
-                        document.getElementById("sort-menu")?.classList.add("hidden");
-                      }}
-                    >
-                      Xem nhiều nhất
-                    </button>
-                    <button
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        sortOption === "most_downloaded" ? "bg-teal-50 text-teal-600" : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                      onClick={() => {
-                        setSortOption("most_downloaded");
-                        document.getElementById("sort-menu")?.classList.add("hidden");
-                      }}
-                    >
-                      Tải nhiều nhất
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Expanded Filters Panel */}
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-white rounded-lg shadow-sm p-6 mb-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div>
-                  <h3 className="font-medium mb-3 text-gray-900">Môn học</h3>
-                  <div className="space-y-2">
-                    {subjects.map((subject) => (
-                      <label key={subject} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="subject"
-                          checked={selectedSubject === subject}
-                          onChange={() => setSelectedSubject(subject)}
-                          className="rounded-full text-teal-600 focus:ring-teal-500"
-                        />
-                        <span className="text-gray-700">{subject}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-3 text-gray-900">Lớp</h3>
-                  <div className="space-y-2">
-                    {grades.map((grade) => (
-                      <label key={grade} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="grade"
-                          checked={selectedGrade === grade}
-                          onChange={() => setSelectedGrade(grade)}
-                          className="rounded-full text-teal-600 focus:ring-teal-500"
-                        />
-                        <span className="text-gray-700">{grade}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-3 text-gray-900">Loại tài liệu</h3>
-                  <div className="space-y-2">
-                    {types.map((type) => (
-                      <label key={type} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="type"
-                          checked={selectedType === type}
-                          onChange={() => setSelectedType(type)}
-                          className="rounded-full text-teal-600 focus:ring-teal-500"
-                        />
-                        <span className="text-gray-700">{type}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-3 text-gray-900">Sắp xếp theo</h3>
-                  <div className="space-y-2">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="sort"
-                        checked={sortOption === "newest"}
-                        onChange={() => setSortOption("newest")}
-                        className="rounded-full text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-gray-700">Mới nhất</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="sort"
-                        checked={sortOption === "most_viewed"}
-                        onChange={() => setSortOption("most_viewed")}
-                        className="rounded-full text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-gray-700">Xem nhiều nhất</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="sort"
-                        checked={sortOption === "most_downloaded"}
-                        onChange={() => setSortOption("most_downloaded")}
-                        className="rounded-full text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-gray-700">Tải nhiều nhất</span>
-                    </label>
-                  </div>
-                </div>
+            <div className="mt-4 md:mt-0 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+              <div className="flex items-center mb-2 text-gray-700">
+                <Wallet className="w-5 h-5 mr-2 text-blue-500" />
+                <span className="font-medium">Số dư hiện tại:</span>
+                <span className="ml-2 font-bold text-blue-600">{formatPrice(userBalance)}</span>
               </div>
               
-              <div className="mt-6 flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSelectedSubject("Tất cả");
-                    setSelectedGrade("Tất cả");
-                    setSelectedType("Tất cả");
-                    setSortOption("newest");
-                  }}
-                >
-                  Đặt lại
-                </Button>
-                <Button onClick={() => setShowFilters(false)}>
-                  Áp dụng
-                </Button>
-              </div>
-            </motion.div>
-          )}
-          
-          {/* Documents List */}
-          {sortedDocuments.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedDocuments.map((doc, index) => (
-                <motion.div
-                  key={doc.id}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <div className="p-6">
-                    <div className="flex items-start mb-4">
-                      {getDocumentIcon(doc.type)}
-                      <div className="ml-4 flex-1">
-                        <h3 className="text-lg font-display font-semibold text-gray-900 line-clamp-2">
-                          {doc.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                          {doc.description}
-                        </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="w-full">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Nạp tiền
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Nạp tiền vào tài khoản</DialogTitle>
+                    <DialogDescription>
+                      Chọn số tiền bạn muốn nạp vào tài khoản
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    {[50000, 100000, 200000, 500000].map((amount) => (
+                      <Button
+                        key={amount}
+                        variant="outline"
+                        onClick={() => handleAddCredit(amount)}
+                        className="flex flex-col items-center h-auto py-3"
+                      >
+                        <span className="font-bold text-lg">{formatPrice(amount)}</span>
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 border-t pt-4">
+                    <h4 className="font-medium text-sm mb-2">Phương thức thanh toán</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="border rounded-md p-2 text-center hover:border-blue-500 cursor-pointer">
+                        <CreditCard className="w-4 h-4 mx-auto mb-1" />
+                        <span className="text-xs">Thẻ tín dụng</span>
+                      </div>
+                      <div className="border rounded-md p-2 text-center hover:border-blue-500 cursor-pointer">
+                        <CreditCard className="w-4 h-4 mx-auto mb-1" />
+                        <span className="text-xs">Ngân hàng</span>
+                      </div>
+                      <div className="border rounded-md p-2 text-center hover:border-blue-500 cursor-pointer">
+                        <Wallet className="w-4 h-4 mx-auto mb-1" />
+                        <span className="text-xs">Ví điện tử</span>
                       </div>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700">
-                        {doc.subject}
-                      </span>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-purple-50 text-purple-700">
-                        {doc.grade}
-                      </span>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-green-50 text-green-700">
-                        {doc.type}
-                      </span>
+                  </div>
+                  
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Hủy</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+            <div className="p-4 md:p-6">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex-1 relative">
+                  <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="Tìm kiếm tài liệu..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                
+                <Select
+                  value={selectedSubject || ""}
+                  onValueChange={(value) => setSelectedSubject(value || null)}
+                >
+                  <SelectTrigger className="w-full md:w-[180px]">
+                    <div className="flex items-center">
+                      <Tag className="w-4 h-4 mr-2" />
+                      <SelectValue placeholder="Môn học" />
                     </div>
-                    
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Tất cả môn học</SelectItem>
+                    {subjects.map((subject) => (
+                      <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <Select
+                  value={sortBy}
+                  onValueChange={(value) => setSortBy(value)}
+                >
+                  <SelectTrigger className="w-full md:w-[180px]">
+                    <div className="flex items-center">
+                      <Filter className="w-4 h-4 mr-2" />
+                      <SelectValue placeholder="Sắp xếp theo" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Mới nhất</SelectItem>
+                    <SelectItem value="oldest">Cũ nhất</SelectItem>
+                    <SelectItem value="downloads">Lượt tải nhiều nhất</SelectItem>
+                    <SelectItem value="price_low">Giá: Thấp đến cao</SelectItem>
+                    <SelectItem value="price_high">Giá: Cao đến thấp</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedDocuments.map((document) => (
+              <motion.div
+                key={document.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="h-full hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <Badge variant="outline" className="bg-blue-50 text-blue-700 hover:bg-blue-100">
+                        {document.subject}
+                      </Badge>
+                      <div className="font-medium text-blue-600">
+                        {formatPrice(document.price)}
+                      </div>
+                    </div>
+                    <CardTitle className="mt-2 line-clamp-2">{document.title}</CardTitle>
+                    <CardDescription className="line-clamp-2">{document.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center text-sm text-gray-500 space-x-4">
                       <div className="flex items-center">
-                        <Eye className="w-4 h-4 mr-1" />
-                        {doc.views}
+                        <Calendar className="w-4 h-4 mr-1" />
+                        <span>{new Date(document.date).toLocaleDateString("vi-VN")}</span>
                       </div>
                       <div className="flex items-center">
                         <Download className="w-4 h-4 mr-1" />
-                        {doc.downloads}
+                        <span>{document.downloads}</span>
                       </div>
-                      <div>{doc.fileSize}</div>
-                      <div className="text-xs text-gray-400">{doc.date}</div>
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                      <Button variant="ghost" size="sm">
-                        <Bookmark className="w-4 h-4 mr-2" />
-                        Lưu
-                      </Button>
-                      <Button asChild>
-                        <Link to={`/documents/${doc.id}`}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Tải xuống
-                        </Link>
-                      </Button>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {document.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          #{tag}
+                        </Badge>
+                      ))}
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg p-8 text-center">
-              <div className="flex justify-center mb-4">
-                <FileText className="w-16 h-16 text-gray-300" />
-              </div>
-              <h3 className="text-xl font-medium text-gray-900 mb-2">Không tìm thấy tài liệu</h3>
-              <p className="text-gray-600 mb-6">
-                Không tìm thấy tài liệu phù hợp với tiêu chí tìm kiếm của bạn.
-              </p>
-              <Button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedSubject("Tất cả");
-                  setSelectedGrade("Tất cả");
-                  setSelectedType("Tất cả");
-                }}
-              >
-                Xóa bộ lọc
-              </Button>
-            </div>
-          )}
+                  </CardContent>
+                  <CardFooter className="flex justify-between border-t pt-4">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <FileText className="w-4 h-4 mr-1" />
+                      <span>{document.fileType} • {document.fileSize}</span>
+                    </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          size="sm" 
+                          onClick={() => setSelectedDocument(document)}
+                        >
+                          Chi tiết
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[500px]">
+                        {selectedDocument && (
+                          <>
+                            <DialogHeader>
+                              <DialogTitle>{selectedDocument.title}</DialogTitle>
+                              <DialogDescription>{selectedDocument.description}</DialogDescription>
+                            </DialogHeader>
+                            
+                            <div className="mt-4 space-y-4">
+                              <div className="flex justify-between">
+                                <span className="font-medium">Môn học:</span>
+                                <Badge variant="outline">{selectedDocument.subject}</Badge>
+                              </div>
+                              
+                              <div className="flex justify-between">
+                                <span className="font-medium">Ngày đăng:</span>
+                                <span>{new Date(selectedDocument.date).toLocaleDateString("vi-VN")}</span>
+                              </div>
+                              
+                              <div className="flex justify-between">
+                                <span className="font-medium">Lượt tải:</span>
+                                <span>{selectedDocument.downloads}</span>
+                              </div>
+                              
+                              <div className="flex justify-between">
+                                <span className="font-medium">Định dạng:</span>
+                                <span>{selectedDocument.fileType} ({selectedDocument.fileSize})</span>
+                              </div>
+                              
+                              <div className="flex justify-between">
+                                <span className="font-medium">Giá:</span>
+                                <span className="font-bold text-blue-600">{formatPrice(selectedDocument.price)}</span>
+                              </div>
+                              
+                              <Separator />
+                              
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <span className="font-medium">Số dư hiện tại:</span>
+                                  <span className="ml-2 font-bold text-blue-600">{formatPrice(userBalance)}</span>
+                                </div>
+                                
+                                <DialogClose asChild>
+                                  <Button
+                                    onClick={() => handleDownload(selectedDocument)}
+                                    disabled={userBalance < selectedDocument.price}
+                                  >
+                                    <Download className="w-4 h-4 mr-2" />
+                                    Tải xuống
+                                  </Button>
+                                </DialogClose>
+                              </div>
+                              
+                              {userBalance < selectedDocument.price && (
+                                <div className="text-sm text-red-500 text-center">
+                                  Số dư không đủ. Vui lòng nạp thêm tiền để tải tài liệu này.
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
           
-          {/* Pagination */}
-          {sortedDocuments.length > 0 && (
-            <div className="mt-12 flex justify-center">
-              <nav className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" disabled>
-                  &laquo; Trước
-                </Button>
-                <Button variant="outline" size="sm" className="bg-teal-50 text-teal-600">
-                  1
-                </Button>
-                <Button variant="outline" size="sm">
-                  2
-                </Button>
-                <Button variant="outline" size="sm">
-                  3
-                </Button>
-                <span className="px-2">...</span>
-                <Button variant="outline" size="sm">
-                  10
-                </Button>
-                <Button variant="outline" size="sm">
-                  Sau &raquo;
-                </Button>
-              </nav>
+          {sortedDocuments.length === 0 && (
+            <div className="text-center py-12">
+              <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy tài liệu</h3>
+              <p className="text-gray-600">
+                Không có tài liệu nào phù hợp với tìm kiếm của bạn. Vui lòng thử lại với từ khóa khác.
+              </p>
             </div>
           )}
         </div>
@@ -568,4 +450,3 @@ const Documents = () => {
 };
 
 export default Documents;
-

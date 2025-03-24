@@ -341,6 +341,22 @@ const CourseDetail = () => {
     }
   };
 
+  // Handler for preview button
+  const handlePreview = () => {
+    // Set first unlocked lesson as selected
+    const firstChapter = course.chapters[0];
+    if (firstChapter && firstChapter.lessons.length > 0) {
+      const firstLesson = firstChapter.lessons[0];
+      setSelectedLesson(firstLesson.id);
+      setActiveTab("content");
+    }
+    
+    toast({
+      title: "Xem trước khóa học",
+      description: "Đang mở bài học đầu tiên để xem trước",
+    });
+  };
+
   return (
     <>
       <Navbar />
@@ -394,7 +410,12 @@ const CourseDetail = () => {
                   >
                     {isEnrolled ? "Đã đăng ký" : "Đăng ký ngay"} - {course.price}
                   </Button>
-                  <Button variant="outline" size="lg" className="bg-white/10 hover:bg-white/20">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="bg-white/10 hover:bg-white/20"
+                    onClick={handlePreview}
+                  >
                     Xem trước
                   </Button>
                 </div>

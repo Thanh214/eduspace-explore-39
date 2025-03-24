@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  Calendar, ChevronLeft, Clock, Heart, MessageSquare, 
+  Calendar, ChevronLeft, Heart, MessageSquare, 
   Share, ThumbsUp, User 
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -54,7 +54,6 @@ const blogPosts = [
       role: "Giáo viên THPT"
     },
     date: "12/05/2023",
-    readTime: "5 phút đọc",
     image: "/lovable-uploads/428998de-7ab2-4da3-a560-bc75a976d5af.png",
     tags: ["học tập", "thpt", "kỹ năng"],
     likes: 45,
@@ -113,7 +112,6 @@ const blogPosts = [
       role: "Giáo viên Toán"
     },
     date: "05/06/2023",
-    readTime: "8 phút đọc",
     image: "/lovable-uploads/23067a8d-b301-4b0b-80d3-1735c26da8ce.png",
     tags: ["đại học", "thi cử", "toán học"],
     likes: 72,
@@ -284,9 +282,7 @@ const BlogPost = () => {
                 </div>
                 <div className="ml-auto flex items-center text-sm text-gray-500">
                   <Calendar className="w-4 h-4 mr-1" />
-                  <span className="mr-3">{post.date}</span>
-                  <Clock className="w-4 h-4 mr-1" />
-                  <span>{post.readTime}</span>
+                  <span>{post.date}</span>
                 </div>
               </div>
               

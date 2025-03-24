@@ -175,15 +175,9 @@ const Profile = () => {
                   
                   <div>
                     <label className="text-sm font-medium text-gray-500">Email</label>
-                    {isEditing ? (
-                      <Input
-                        name="email"
-                        value={tempProfileData.email}
-                        onChange={handleChange}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <div className="mt-1 font-medium">{profileData.email}</div>
+                    <div className="mt-1 font-medium">{profileData.email}</div>
+                    {isEditing && (
+                      <p className="text-xs text-gray-500 mt-1">Email không thể thay đổi sau khi đăng ký</p>
                     )}
                   </div>
                   

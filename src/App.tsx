@@ -17,6 +17,7 @@ import CourseDetail from "./pages/CourseDetail";
 import Documents from "./pages/Documents";
 import About from "./pages/About";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>

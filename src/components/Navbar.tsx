@@ -1,11 +1,19 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Book, BookOpen, Users, ShoppingBag, LogIn } from 'lucide-react';
+import { Menu, X, ChevronDown, Book, BookOpen, Users, ShoppingBag, LogIn, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // This is a placeholder for authentication status - in a real app, 
+  // this would come from an auth context or similar
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Toggle login status for demonstration purposes
+  const toggleLogin = () => {
+    setIsLoggedIn(!isLoggedIn);
+  };
   
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 border-b border-gray-100 shadow-soft">
@@ -41,14 +49,15 @@ const Navbar = () => {
           
           {/* Authentication Buttons */}
           <div className="hidden md:flex items-center space-x-3">
+            {/* Show profile link if logged in, otherwise show login/register buttons */}
             <Button variant="outline" asChild>
-              <Link to="/login" className="flex items-center space-x-1">
-                <LogIn className="w-4 h-4 mr-1" />
-                <span>Đăng nhập</span>
+              <Link to="/profile" className="flex items-center space-x-1">
+                <User className="w-4 h-4 mr-1" />
+                <span>Tài khoản</span>
               </Link>
             </Button>
             <Button asChild>
-              <Link to="/register">Đăng ký</Link>
+              <Link to="/login">Đăng nhập</Link>
             </Button>
           </div>
           
@@ -105,13 +114,13 @@ const Navbar = () => {
             <div className="flex items-center px-5">
               <div className="flex-shrink-0">
                 <Button variant="outline" asChild className="w-full mb-2">
-                  <Link to="/login" className="flex items-center justify-center">
-                    <LogIn className="w-4 h-4 mr-1" />
-                    <span>Đăng nhập</span>
+                  <Link to="/profile" className="flex items-center justify-center" onClick={() => setIsMenuOpen(false)}>
+                    <User className="w-4 h-4 mr-1" />
+                    <span>Tài khoản</span>
                   </Link>
                 </Button>
                 <Button asChild className="w-full">
-                  <Link to="/register">Đăng ký</Link>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Đăng nhập</Link>
                 </Button>
               </div>
             </div>

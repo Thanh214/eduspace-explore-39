@@ -142,13 +142,19 @@ const Documents = () => {
     return matchesSearch && matchesSubject && matchesGrade && matchesType;
   });
 
+  // Helper function to convert date string to Date object
+  const parseDate = (dateString: string): Date => {
+    const [day, month, year] = dateString.split('/').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   // Sort documents based on sort option
   const sortedDocuments = [...filteredDocuments].sort((a, b) => {
     switch (sortOption) {
       case "newest":
-        return new Date(b.date.split('/').reverse().join('-')) - new Date(a.date.split('/').reverse().join('-'));
+        return parseDate(b.date).getTime() - parseDate(a.date).getTime();
       case "oldest":
-        return new Date(a.date.split('/').reverse().join('-')) - new Date(b.date.split('/').reverse().join('-'));
+        return parseDate(a.date).getTime() - parseDate(b.date).getTime();
       case "most_viewed":
         return b.views - a.views;
       case "most_downloaded":
@@ -562,3 +568,4 @@ const Documents = () => {
 };
 
 export default Documents;
+

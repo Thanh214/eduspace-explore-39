@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Download, FileText, Search, Filter, Tag, Clock, Calendar, CreditCard, Wallet, Plus } from "lucide-react";
 import { 
   Card, 
-  CardContent, the 
+  CardContent,
   CardDescription, 
   CardFooter, 
   CardHeader, 
@@ -35,6 +34,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import UserBalance from "@/components/UserBalance";
 
 // Mocked documents data
 const documentsData = [

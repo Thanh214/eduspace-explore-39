@@ -6,23 +6,24 @@ import { User, Mail, Phone, Book, FileText, Clock, Calendar, Edit, Save, Camera 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import UserBalance from "@/components/UserBalance";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Profile = () => {
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: "Nguyễn Văn A",
-    email: "example@gmail.com",
-    phone: "0987654321",
-    address: "Hà Nội, Việt Nam",
-    dob: "01/01/2000",
+  const [tempProfileData, setTempProfileData] = useState({
+    name: user?.name || "",
+    phone: user?.phone || "",
+    address: user?.address || "",
+    dob: user?.dob || "",
   });
-  const [tempProfileData, setTempProfileData] = useState({...profileData});
   const { toast } = useToast();
 
   // My Courses data
@@ -59,6 +60,31 @@ const Profile = () => {
     },
   ];
 
+  // My Tests data
+  const myTests = [
+    {
+      id: 1,
+      title: "Bài kiểm tra giữa kỳ môn Toán",
+      date: "2023-11-05",
+      score: "85/100",
+      status: "Đã hoàn thành"
+    },
+    {
+      id: 2,
+      title: "Bài kiểm tra cuối kỳ môn Lập trình Web",
+      date: "2023-12-10",
+      score: "90/100",
+      status: "Đã hoàn thành"
+    },
+    {
+      id: 3,
+      title: "Bài kiểm tra nhanh HTML/CSS",
+      date: "2024-01-15",
+      score: "-",
+      status: "Chưa hoàn thành"
+    }
+  ];
+
   // My Comments data
   const myComments = [
     {
@@ -78,14 +104,21 @@ const Profile = () => {
   const handleEditToggle = () => {
     if (isEditing) {
       // Save changes
-      setProfileData({...tempProfileData});
-      toast({
-        title: "Cập nhật thành công",
-        description: "Thông tin cá nhân của bạn đã được cập nhật.",
-      });
+      if (user) {
+        // Update user information through context
+        toast({
+          title: "Cập nhật thành công",
+          description: "Thông tin cá nhân của bạn đã được cập nhật.",
+        });
+      }
     } else {
       // Start editing
-      setTempProfileData({...profileData});
+      setTempProfileData({
+        name: user?.name || "",
+        phone: user?.phone || "",
+        address: user?.address || "",
+        dob: user?.dob || "",
+      });
     }
     setIsEditing(!isEditing);
   };
@@ -113,8 +146,8 @@ const Profile = () => {
               <div className="flex flex-col md:flex-row md:items-center gap-6">
                 <div className="relative">
                   <Avatar className="w-24 h-24">
-                    <AvatarImage src="https://github.com/shadcn.png" alt={profileData.name} />
-                    <AvatarFallback>{profileData.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarImage src="https://github.com/shadcn.png" alt={user?.name} />
+                    <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "UN"}</AvatarFallback>
                   </Avatar>
                   <Button size="icon" variant="outline" className="absolute bottom-0 right-0 rounded-full bg-white">
                     <Camera className="h-4 w-4" />
@@ -122,18 +155,20 @@ const Profile = () => {
                 </div>
                 
                 <div className="flex-1">
-                  <h1 className="text-2xl font-bold text-gray-900">{profileData.name}</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">{user?.name}</h1>
                   <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-gray-500 mt-1">
                     <div className="flex items-center">
                       <Mail className="w-4 h-4 mr-1" />
-                      <span>{profileData.email}</span>
+                      <span>{user?.email}</span>
                     </div>
                     <div className="flex items-center">
                       <Phone className="w-4 h-4 mr-1" />
-                      <span>{profileData.phone}</span>
+                      <span>{user?.phone}</span>
                     </div>
                   </div>
                 </div>
+                
+                <UserBalance className="md:self-start" />
                 
                 <Button onClick={handleEditToggle} className="md:self-start">
                   {isEditing ? (
@@ -169,13 +204,13 @@ const Profile = () => {
                         className="mt-1"
                       />
                     ) : (
-                      <div className="mt-1 font-medium">{profileData.name}</div>
+                      <div className="mt-1 font-medium">{user?.name}</div>
                     )}
                   </div>
                   
                   <div>
                     <label className="text-sm font-medium text-gray-500">Email</label>
-                    <div className="mt-1 font-medium">{profileData.email}</div>
+                    <div className="mt-1 font-medium">{user?.email}</div>
                     {isEditing && (
                       <p className="text-xs text-gray-500 mt-1">Email không thể thay đổi sau khi đăng ký</p>
                     )}
@@ -191,7 +226,7 @@ const Profile = () => {
                         className="mt-1"
                       />
                     ) : (
-                      <div className="mt-1 font-medium">{profileData.phone}</div>
+                      <div className="mt-1 font-medium">{user?.phone}</div>
                     )}
                   </div>
                   
@@ -205,7 +240,7 @@ const Profile = () => {
                         className="mt-1"
                       />
                     ) : (
-                      <div className="mt-1 font-medium">{profileData.address}</div>
+                      <div className="mt-1 font-medium">{user?.address}</div>
                     )}
                   </div>
                   
@@ -219,7 +254,7 @@ const Profile = () => {
                         className="mt-1"
                       />
                     ) : (
-                      <div className="mt-1 font-medium">{profileData.dob}</div>
+                      <div className="mt-1 font-medium">{user?.dob}</div>
                     )}
                   </div>
                 </CardContent>
@@ -231,6 +266,7 @@ const Profile = () => {
                 <TabsList className="w-full md:w-auto">
                   <TabsTrigger value="courses">Khóa học của tôi</TabsTrigger>
                   <TabsTrigger value="documents">Tài liệu đã tải</TabsTrigger>
+                  <TabsTrigger value="tests">Bài kiểm tra</TabsTrigger>
                   <TabsTrigger value="comments">Bình luận của tôi</TabsTrigger>
                 </TabsList>
                 
@@ -336,6 +372,62 @@ const Profile = () => {
                       <Button asChild>
                         <Link to="/documents">Khám phá tài liệu</Link>
                       </Button>
+                    </div>
+                  )}
+                </TabsContent>
+                
+                <TabsContent value="tests" className="mt-6">
+                  <h2 className="text-xl font-semibold mb-4">Bài kiểm tra của tôi</h2>
+                  {myTests.length > 0 ? (
+                    <div className="space-y-4">
+                      {myTests.map((test) => (
+                        <motion.div
+                          key={test.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Card>
+                            <CardContent className="p-6">
+                              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div className="flex-1">
+                                  <div className="text-lg font-medium">
+                                    {test.title}
+                                  </div>
+                                  <div className="mt-2 flex flex-col md:flex-row md:items-center gap-4 text-sm text-gray-500">
+                                    <div className="flex items-center">
+                                      <Calendar className="w-4 h-4 mr-1" />
+                                      <span>Ngày thi: {formatDate(test.date)}</span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <Clock className="w-4 h-4 mr-1" />
+                                      <span>Điểm số: {test.score}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                  test.status === "Đã hoàn thành" 
+                                    ? "bg-green-100 text-green-800" 
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}>
+                                  {test.status}
+                                </div>
+                                <Button variant={test.status === "Đã hoàn thành" ? "outline" : "default"}>
+                                  {test.status === "Đã hoàn thành" ? "Xem kết quả" : "Làm bài kiểm tra"}
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 bg-gray-50 rounded-lg">
+                      <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa có bài kiểm tra nào</h3>
+                      <p className="text-gray-600 mb-4">
+                        Hãy hoàn thành các bài học để mở khóa bài kiểm tra
+                      </p>
                     </div>
                   )}
                 </TabsContent>

@@ -10,7 +10,10 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import CreateBlogPost from "./pages/CreateBlogPost";
 import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
 import Documents from "./pages/Documents";
 import About from "./pages/About";
 import Register from "./pages/Register";
@@ -26,8 +29,10 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:id" element={<NotFound />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/blog/create" element={<CreateBlogPost />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />

@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Calendar, ChevronLeft, Heart, MessageSquare, 
-  Share, ThumbsUp, User 
+  ThumbsUp, User 
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -140,7 +139,6 @@ const BlogPost = () => {
     return foundPost || null;
   });
   
-  // Handle case where post is not found
   if (!post) {
     return (
       <>
@@ -158,7 +156,6 @@ const BlogPost = () => {
     );
   }
   
-  // Handle submitting a new comment
   const handleCommentSubmit = () => {
     if (!commentText.trim()) {
       toast({
@@ -169,7 +166,6 @@ const BlogPost = () => {
       return;
     }
     
-    // In a real app, this would send a request to the backend
     const newComment = {
       id: post.comments.length + 1,
       user: {
@@ -181,7 +177,6 @@ const BlogPost = () => {
       likes: 0
     };
     
-    // Update the post with the new comment
     setPost(prevPost => {
       if (!prevPost) return null;
       return {
@@ -190,7 +185,6 @@ const BlogPost = () => {
       };
     });
     
-    // Clear the comment text
     setCommentText("");
     
     toast({
@@ -199,7 +193,6 @@ const BlogPost = () => {
     });
   };
   
-  // Handle liking the post
   const handleLikePost = () => {
     setIsLiked(!isLiked);
     setPost(prevPost => {
@@ -211,7 +204,6 @@ const BlogPost = () => {
     });
   };
   
-  // Handle liking a comment
   const handleLikeComment = (commentId: number) => {
     setPost(prevPost => {
       if (!prevPost) return null;
@@ -245,7 +237,6 @@ const BlogPost = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Featured image */}
             <div className="relative h-[300px]">
               <img 
                 src={post.image} 
@@ -254,10 +245,9 @@ const BlogPost = () => {
               />
             </div>
             
-            {/* Post header */}
             <div className="p-6 md:p-8">
               <div className="flex flex-wrap gap-2 mb-4">
-                {post.tags.map((tag, index) => (
+                {post?.tags.map((tag, index) => (
                   <span 
                     key={index}
                     className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full"
@@ -268,31 +258,29 @@ const BlogPost = () => {
               </div>
               
               <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-4">
-                {post.title}
+                {post?.title}
               </h1>
               
               <div className="flex items-center mb-6">
                 <Avatar className="h-10 w-10 mr-3">
-                  <AvatarImage src={post.author.avatar} alt={post.author.name} />
-                  <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={post?.author.avatar} alt={post?.author.name} />
+                  <AvatarFallback>{post?.author.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <div className="font-medium text-gray-900">{post.author.name}</div>
-                  <div className="text-sm text-gray-500">{post.author.role}</div>
+                  <div className="font-medium text-gray-900">{post?.author.name}</div>
+                  <div className="text-sm text-gray-500">{post?.author.role}</div>
                 </div>
                 <div className="ml-auto flex items-center text-sm text-gray-500">
                   <Calendar className="w-4 h-4 mr-1" />
-                  <span>{post.date}</span>
+                  <span>{post?.date}</span>
                 </div>
               </div>
               
-              {/* Post content */}
               <div 
                 className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: post?.content || "" }}
               />
               
-              {/* Social interactions */}
               <div className="mt-8 pt-6 border-t border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -303,7 +291,7 @@ const BlogPost = () => {
                       onClick={handleLikePost}
                     >
                       <ThumbsUp className="w-4 h-4" />
-                      <span>{post.likes} Thích</span>
+                      <span>{post?.likes} Thích</span>
                     </Button>
                     <Button
                       variant="outline"
@@ -312,7 +300,7 @@ const BlogPost = () => {
                       onClick={() => document.getElementById("comments-section")?.scrollIntoView({ behavior: "smooth" })}
                     >
                       <MessageSquare className="w-4 h-4" />
-                      <span>{post.comments.length} Bình luận</span>
+                      <span>{post?.comments.length} Bình luận</span>
                     </Button>
                   </div>
                   
@@ -321,7 +309,20 @@ const BlogPost = () => {
                     size="sm"
                     className="flex items-center space-x-2"
                   >
-                    <Share className="w-4 h-4" />
+                    <svg 
+                      width="16" 
+                      height="16" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-1"
+                    >
+                      <path 
+                        d="M15 5l-1.5 1.5 3.5 3.5H7v2h10l-3.5 3.5L15 17l6-6-6-6z" 
+                        fill="currentColor"
+                        transform="rotate(45, 12, 12)"
+                      />
+                    </svg>
                     <span>Chia sẻ</span>
                   </Button>
                 </div>
@@ -329,14 +330,12 @@ const BlogPost = () => {
             </div>
           </motion.article>
           
-          {/* Comments section */}
           <div id="comments-section" className="mt-8">
             <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
               <h2 className="text-xl font-display font-semibold mb-6">
-                Bình luận ({post.comments.length})
+                Bình luận ({post?.comments.length})
               </h2>
               
-              {/* Add comment form */}
               <div className="flex items-start mb-8">
                 <Avatar className="h-10 w-10 mr-3 mt-1">
                   <AvatarImage src="/placeholder.svg" alt="Người dùng" />
@@ -355,9 +354,8 @@ const BlogPost = () => {
               
               <Separator className="my-6" />
               
-              {/* Comments list */}
               <div className="space-y-6">
-                {post.comments.map((comment) => (
+                {post?.comments.map((comment) => (
                   <div key={comment.id} className="flex">
                     <Avatar className="h-10 w-10 mr-3">
                       <AvatarImage src={comment.user.avatar} alt={comment.user.name} />

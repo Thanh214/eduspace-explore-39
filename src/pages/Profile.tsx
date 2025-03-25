@@ -2,22 +2,23 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, Book, FileText, Clock, Calendar, Edit, Save, Camera } from "lucide-react";
+import { User, Mail, Phone, Book, FileText, Clock, Calendar, Edit, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import UserBalance from "@/components/UserBalance";
 import { useAuth } from "@/contexts/AuthContext";
+import AvatarUpload from "@/components/AvatarUpload";
 
 const Profile = () => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>(user?.avatar || "https://github.com/shadcn.png");
   const [tempProfileData, setTempProfileData] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
@@ -123,6 +124,10 @@ const Profile = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    setAvatarUrl(newAvatarUrl);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTempProfileData(prev => ({
@@ -144,15 +149,11 @@ const Profile = () => {
           <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
             <div className="p-6 md:p-8">
               <div className="flex flex-col md:flex-row md:items-center gap-6">
-                <div className="relative">
-                  <Avatar className="w-24 h-24">
-                    <AvatarImage src="https://github.com/shadcn.png" alt={user?.name} />
-                    <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "UN"}</AvatarFallback>
-                  </Avatar>
-                  <Button size="icon" variant="outline" className="absolute bottom-0 right-0 rounded-full bg-white">
-                    <Camera className="h-4 w-4" />
-                  </Button>
-                </div>
+                <AvatarUpload 
+                  currentAvatar={avatarUrl}
+                  fallback={user?.name?.substring(0, 2).toUpperCase() || "UN"}
+                  onAvatarChange={handleAvatarChange}
+                />
                 
                 <div className="flex-1">
                   <h1 className="text-2xl font-bold text-gray-900">{user?.name}</h1>

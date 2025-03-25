@@ -28,79 +28,13 @@ const Profile = () => {
   const { toast } = useToast();
 
   // My Courses data
-  const myCourses = [
-    {
-      id: 1,
-      title: "Lập trình Web cơ bản với HTML, CSS và JavaScript",
-      progress: 75,
-      lastAccessed: "2023-10-15",
-    },
-    {
-      id: 2,
-      title: "Toán cao cấp cho sinh viên IT",
-      progress: 40,
-      lastAccessed: "2023-10-10",
-    },
-  ];
+  const myCourses = [];
 
   // My Documents data
-  const myDocuments = [
-    {
-      id: 1,
-      title: "Đề thi thử THPT Quốc Gia môn Toán năm 2023",
-      downloadDate: "2023-09-20",
-      fileType: "PDF",
-      fileSize: "2.4 MB",
-    },
-    {
-      id: 2,
-      title: "Tài liệu ôn thi THPT Quốc Gia môn Tiếng Anh",
-      downloadDate: "2023-09-15",
-      fileType: "PDF",
-      fileSize: "3.8 MB",
-    },
-  ];
-
-  // My Tests data
-  const myTests = [
-    {
-      id: 1,
-      title: "Bài kiểm tra giữa kỳ môn Toán",
-      date: "2023-11-05",
-      score: "85/100",
-      status: "Đã hoàn thành"
-    },
-    {
-      id: 2,
-      title: "Bài kiểm tra cuối kỳ môn Lập trình Web",
-      date: "2023-12-10",
-      score: "90/100",
-      status: "Đã hoàn thành"
-    },
-    {
-      id: 3,
-      title: "Bài kiểm tra nhanh HTML/CSS",
-      date: "2024-01-15",
-      score: "-",
-      status: "Chưa hoàn thành"
-    }
-  ];
+  const myDocuments = [];
 
   // My Comments data
-  const myComments = [
-    {
-      id: 1,
-      text: "Tài liệu rất hữu ích cho kỳ thi sắp tới, cảm ơn tác giả!",
-      date: "2023-10-01",
-      onPost: "Đề thi thử THPT Quốc Gia môn Toán năm 2023",
-    },
-    {
-      id: 2,
-      text: "Khóa học này rất chi tiết và dễ hiểu, đặc biệt phù hợp với người mới bắt đầu.",
-      date: "2023-09-25",
-      onPost: "Lập trình Web cơ bản với HTML, CSS và JavaScript",
-    },
-  ];
+  const myComments = [];
 
   const handleEditToggle = () => {
     if (isEditing) {
@@ -252,9 +186,11 @@ const Profile = () => {
                     {isEditing ? (
                       <Input
                         name="dob"
+                        type="text"
                         value={tempProfileData.dob}
                         onChange={handleChange}
                         className="mt-1"
+                        placeholder="DD/MM/YYYY"
                       />
                     ) : (
                       <div className="mt-1 font-medium">{user?.dob}</div>
@@ -265,208 +201,145 @@ const Profile = () => {
             </div>
             
             <div className="md:col-span-3">
-              <Tabs defaultValue="courses">
-                <TabsList className="w-full md:w-auto">
-                  <TabsTrigger value="courses">Khóa học của tôi</TabsTrigger>
-                  <TabsTrigger value="documents">Tài liệu đã tải</TabsTrigger>
-                  <TabsTrigger value="tests">Bài kiểm tra</TabsTrigger>
-                  <TabsTrigger value="comments">Bình luận của tôi</TabsTrigger>
+              <Tabs defaultValue="courses" className="w-full">
+                <TabsList className="grid grid-cols-3 mb-4">
+                  <TabsTrigger value="courses" className="flex items-center">
+                    <Book className="w-4 h-4 mr-2" />
+                    <span>Khóa học của tôi</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="documents" className="flex items-center">
+                    <FileText className="w-4 h-4 mr-2" />
+                    <span>Tài liệu đã mua</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="comments" className="flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    <span>Hoạt động của tôi</span>
+                  </TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="courses" className="mt-6">
-                  <h2 className="text-xl font-semibold mb-4">Khóa học của tôi</h2>
+                <TabsContent value="courses" className="space-y-4">
                   {myCourses.length > 0 ? (
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {myCourses.map((course) => (
-                        <motion.div
-                          key={course.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Card>
-                            <CardContent className="p-6">
-                              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div className="flex-1">
-                                  <Link to={`/courses/${course.id}`} className="text-lg font-medium hover:text-blue-600 transition-colors">
-                                    {course.title}
-                                  </Link>
-                                  <div className="mt-2 flex flex-col md:flex-row md:items-center gap-4 text-sm text-gray-500">
-                                    <div className="flex items-center">
-                                      <Clock className="w-4 h-4 mr-1" />
-                                      <span>Tiến độ: {course.progress}%</span>
-                                    </div>
-                                    <div className="flex items-center">
-                                      <Calendar className="w-4 h-4 mr-1" />
-                                      <span>Truy cập cuối: {formatDate(course.lastAccessed)}</span>
-                                    </div>
-                                  </div>
+                        <Card key={course.id}>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium text-gray-900">{course.title}</h3>
+                                <div className="flex items-center mt-1 text-sm text-gray-500">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  <span>Truy cập gần nhất: {formatDate(course.lastAccessed)}</span>
                                 </div>
-                                <Button asChild>
-                                  <Link to={`/courses/${course.id}`}>
-                                    Tiếp tục học
-                                  </Link>
-                                </Button>
                               </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
+                              <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+                                {course.progress}% hoàn thành
+                              </div>
+                            </div>
+                            <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-blue-600 h-2 rounded-full" 
+                                style={{ width: `${course.progress}%` }}
+                              ></div>
+                            </div>
+                            <div className="mt-4">
+                              <Button asChild size="sm" className="w-full">
+                                <Link to={`/courses/${course.id}`}>Tiếp tục học</Link>
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <Book className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa đăng ký khóa học nào</h3>
-                      <p className="text-gray-600 mb-4">
-                        Hãy khám phá các khóa học chất lượng của chúng tôi
-                      </p>
-                      <Button asChild>
-                        <Link to="/courses">Khám phá khóa học</Link>
-                      </Button>
-                    </div>
+                    <Card>
+                      <CardContent className="p-6 text-center">
+                        <Book className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa tham gia khóa học nào</h3>
+                        <p className="text-gray-600 mb-4">Hãy khám phá các khóa học của chúng tôi để nâng cao kiến thức của bạn</p>
+                        <Button asChild>
+                          <Link to="/courses">Khám phá khóa học</Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
                   )}
                 </TabsContent>
                 
-                <TabsContent value="documents" className="mt-6">
-                  <h2 className="text-xl font-semibold mb-4">Tài liệu đã tải</h2>
+                <TabsContent value="documents" className="space-y-4">
                   {myDocuments.length > 0 ? (
                     <div className="space-y-4">
                       {myDocuments.map((doc) => (
-                        <motion.div
-                          key={doc.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Card>
-                            <CardContent className="p-6">
-                              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div className="flex-1">
-                                  <div className="text-lg font-medium">
-                                    {doc.title}
-                                  </div>
-                                  <div className="mt-2 flex flex-col md:flex-row md:items-center gap-4 text-sm text-gray-500">
-                                    <div className="flex items-center">
-                                      <FileText className="w-4 h-4 mr-1" />
-                                      <span>{doc.fileType} • {doc.fileSize}</span>
-                                    </div>
-                                    <div className="flex items-center">
-                                      <Calendar className="w-4 h-4 mr-1" />
-                                      <span>Tải xuống: {formatDate(doc.downloadDate)}</span>
-                                    </div>
-                                  </div>
+                        <Card key={doc.id}>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h3 className="font-medium text-gray-900">{doc.title}</h3>
+                                <div className="flex items-center mt-1 text-sm text-gray-500">
+                                  <Calendar className="w-4 h-4 mr-1" />
+                                  <span>Ngày tải: {formatDate(doc.downloadDate)}</span>
                                 </div>
-                                <Button variant="outline">
-                                  Tải lại
-                                </Button>
                               </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
+                              <div className="flex items-center text-xs text-gray-500">
+                                <FileText className="w-4 h-4 mr-1" />
+                                <span>{doc.fileType}</span>
+                                <span className="mx-1">•</span>
+                                <span>{doc.fileSize}</span>
+                              </div>
+                            </div>
+                            <div className="mt-3">
+                              <Button variant="outline" size="sm">
+                                Tải lại
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa tải tài liệu nào</h3>
-                      <p className="text-gray-600 mb-4">
-                        Khám phá kho tài liệu học tập phong phú của chúng tôi
-                      </p>
-                      <Button asChild>
-                        <Link to="/documents">Khám phá tài liệu</Link>
-                      </Button>
-                    </div>
+                    <Card>
+                      <CardContent className="p-6 text-center">
+                        <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa mua tài liệu nào</h3>
+                        <p className="text-gray-600 mb-4">Khám phá kho tài liệu đa dạng của chúng tôi để nâng cao kiến thức của bạn</p>
+                        <Button asChild>
+                          <Link to="/documents">Khám phá tài liệu</Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
                   )}
                 </TabsContent>
                 
-                <TabsContent value="tests" className="mt-6">
-                  <h2 className="text-xl font-semibold mb-4">Bài kiểm tra của tôi</h2>
-                  {myTests.length > 0 ? (
-                    <div className="space-y-4">
-                      {myTests.map((test) => (
-                        <motion.div
-                          key={test.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Card>
-                            <CardContent className="p-6">
-                              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div className="flex-1">
-                                  <div className="text-lg font-medium">
-                                    {test.title}
-                                  </div>
-                                  <div className="mt-2 flex flex-col md:flex-row md:items-center gap-4 text-sm text-gray-500">
-                                    <div className="flex items-center">
-                                      <Calendar className="w-4 h-4 mr-1" />
-                                      <span>Ngày thi: {formatDate(test.date)}</span>
-                                    </div>
-                                    <div className="flex items-center">
-                                      <Clock className="w-4 h-4 mr-1" />
-                                      <span>Điểm số: {test.score}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                  test.status === "Đã hoàn thành" 
-                                    ? "bg-green-100 text-green-800" 
-                                    : "bg-yellow-100 text-yellow-800"
-                                }`}>
-                                  {test.status}
-                                </div>
-                                <Button variant={test.status === "Đã hoàn thành" ? "outline" : "default"}>
-                                  {test.status === "Đã hoàn thành" ? "Xem kết quả" : "Làm bài kiểm tra"}
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa có bài kiểm tra nào</h3>
-                      <p className="text-gray-600 mb-4">
-                        Hãy hoàn thành các bài học để mở khóa bài kiểm tra
-                      </p>
-                    </div>
-                  )}
-                </TabsContent>
-                
-                <TabsContent value="comments" className="mt-6">
-                  <h2 className="text-xl font-semibold mb-4">Bình luận của tôi</h2>
+                <TabsContent value="comments" className="space-y-4">
                   {myComments.length > 0 ? (
-                    <div className="space-y-4">
-                      {myComments.map((comment) => (
-                        <motion.div
-                          key={comment.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Card>
-                            <CardContent className="p-6">
-                              <div className="mb-2 text-sm text-gray-500 flex items-center justify-between">
-                                <span>Về: <span className="font-medium text-gray-700">{comment.onPost}</span></span>
-                                <span>{formatDate(comment.date)}</span>
-                              </div>
-                              <Separator className="my-2" />
-                              <p className="text-gray-800">{comment.text}</p>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))}
-                    </div>
+                    <Card>
+                      <CardContent className="p-4">
+                        <h3 className="font-medium text-gray-900 mb-4">Bình luận của tôi</h3>
+                        {myComments.map((comment) => (
+                          <div key={comment.id} className="border-b pb-4 mb-4 last:border-b-0 last:mb-0 last:pb-0">
+                            <p className="text-gray-700 mb-2">{comment.text}</p>
+                            <div className="flex items-center justify-between text-sm text-gray-500">
+                              <span>Trên: <Link to="#" className="text-blue-600 hover:underline">{comment.onPost}</Link></span>
+                              <span>{formatDate(comment.date)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
                   ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Bạn chưa có bình luận nào</h3>
-                      <p className="text-gray-600 mb-4">
-                        Hãy tham gia thảo luận trong các khóa học và tài liệu
-                      </p>
-                    </div>
+                    <Card>
+                      <CardContent className="p-6 text-center">
+                        <User className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có hoạt động nào</h3>
+                        <p className="text-gray-600 mb-4">Tham gia thảo luận và chia sẻ ý kiến của bạn về các khóa học và tài liệu</p>
+                        <div className="flex gap-3 justify-center">
+                          <Button asChild variant="outline">
+                            <Link to="/blog">Đọc bài viết</Link>
+                          </Button>
+                          <Button asChild>
+                            <Link to="/blog/create">Đăng bài mới</Link>
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
                   )}
                 </TabsContent>
               </Tabs>

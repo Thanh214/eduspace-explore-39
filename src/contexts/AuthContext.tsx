@@ -9,6 +9,7 @@ interface User {
   phone: string;
   address: string;
   dob: string;
+  avatar?: string; // Added avatar property as optional
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (user: User, password: string) => Promise<void>;
   logout: () => void;
+  updateUserProfile?: (updates: Partial<User>) => void; // Added method to update user profile
 }
 
 const defaultUser = {
@@ -25,6 +27,7 @@ const defaultUser = {
   phone: "0987654321",
   address: "Hà Nội, Việt Nam",
   dob: "01/01/2000",
+  avatar: "https://github.com/shadcn.png", // Default avatar
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -69,6 +72,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
+  const updateUserProfile = (updates: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...updates };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      toast({
+        title: "Cập nhật thành công",
+        description: "Thông tin cá nhân của bạn đã được cập nhật.",
+      });
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
@@ -81,7 +97,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated: !!user, 
+      login, 
+      register, 
+      logout,
+      updateUserProfile 
+    }}>
       {children}
     </AuthContext.Provider>
   );

@@ -16,9 +16,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import AvatarUpload from "@/components/AvatarUpload";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string>(user?.avatar || "https://github.com/shadcn.png");
+  const [avatarUrl, setAvatarUrl] = useState<string>(user?.avatar || "/placeholder.svg");
   const [tempProfileData, setTempProfileData] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
@@ -105,11 +105,10 @@ const Profile = () => {
   const handleEditToggle = () => {
     if (isEditing) {
       // Save changes
-      if (user) {
-        // Update user information through context
-        toast({
-          title: "Cập nhật thành công",
-          description: "Thông tin cá nhân của bạn đã được cập nhật.",
+      if (user && updateUserProfile) {
+        updateUserProfile({
+          ...tempProfileData,
+          avatar: avatarUrl
         });
       }
     } else {
@@ -126,6 +125,9 @@ const Profile = () => {
 
   const handleAvatarChange = (newAvatarUrl: string) => {
     setAvatarUrl(newAvatarUrl);
+    if (updateUserProfile) {
+      updateUserProfile({ avatar: newAvatarUrl });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

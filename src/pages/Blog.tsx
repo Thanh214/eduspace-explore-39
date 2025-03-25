@@ -12,7 +12,92 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 // Sample blog data
-const blogPosts = [];
+const blogPosts = [
+  {
+    id: 1,
+    title: "Phương pháp học tập hiệu quả cho học sinh THPT",
+    excerpt: "Khám phá các phương pháp học tập giúp nâng cao hiệu quả và kết quả học tập ở bậc THPT...",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl.",
+    author: "Nguyễn Thanh Tùng",
+    date: "12/05/2023",
+    readTime: "5 phút đọc",
+    image: "/lovable-uploads/428998de-7ab2-4da3-a560-bc75a976d5af.png",
+    tags: ["học tập", "thpt", "kỹ năng"],
+    likes: 45,
+    comments: 12,
+    category: "Kỹ năng học tập"
+  },
+  {
+    id: 2,
+    title: "10 bí quyết ôn thi đại học môn Toán hiệu quả",
+    excerpt: "Những bí quyết giúp bạn ôn tập và chuẩn bị tốt nhất cho kỳ thi đại học môn Toán...",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl.",
+    author: "Trần Minh Hiếu",
+    date: "05/06/2023",
+    readTime: "8 phút đọc",
+    image: "/lovable-uploads/23067a8d-b301-4b0b-80d3-1735c26da8ce.png",
+    tags: ["đại học", "thi cử", "toán học"],
+    likes: 72,
+    comments: 24,
+    category: "Ôn thi đại học"
+  },
+  {
+    id: 3,
+    title: "Cách viết một bài văn nghị luận xuất sắc",
+    excerpt: "Hướng dẫn chi tiết cách viết bài văn nghị luận với cấu trúc rõ ràng và lập luận thuyết phục...",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl.",
+    author: "Lê Thu Hương",
+    date: "28/06/2023",
+    readTime: "6 phút đọc",
+    image: "/lovable-uploads/1768ad12-24d4-473b-9d8a-0e2514c39e42.png",
+    tags: ["văn học", "kỹ năng viết", "nghị luận"],
+    likes: 56,
+    comments: 18,
+    category: "Văn học"
+  },
+  {
+    id: 4,
+    title: "Lộ trình học tiếng Anh từ cơ bản đến nâng cao",
+    excerpt: "Chia sẻ lộ trình học tiếng Anh hiệu quả từ người mới bắt đầu đến trình độ nâng cao...",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl.",
+    author: "Phạm Quang Minh",
+    date: "15/07/2023",
+    readTime: "7 phút đọc",
+    image: "/placeholder.svg",
+    tags: ["tiếng anh", "ngoại ngữ", "học tập"],
+    likes: 89,
+    comments: 32,
+    category: "Ngoại ngữ"
+  },
+  {
+    id: 5,
+    title: "5 phương pháp ghi nhớ hiệu quả trong học tập",
+    excerpt: "Khám phá các kỹ thuật ghi nhớ giúp bạn học tập hiệu quả và lưu trữ kiến thức dài lâu...",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl.",
+    author: "Vũ Thị Mai Anh",
+    date: "10/08/2023",
+    readTime: "5 phút đọc",
+    image: "/placeholder.svg",
+    tags: ["kỹ năng học tập", "ghi nhớ", "phương pháp"],
+    likes: 63,
+    comments: 15,
+    category: "Kỹ năng học tập"
+  },
+  {
+    id: 6,
+    title: "Các phương pháp giải nhanh bài tập Vật lý",
+    excerpt: "Chia sẻ những phương pháp giải nhanh các dạng bài tập Vật lý thường gặp trong chương trình THPT...",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl. Sed euismod, nisl vel ultricies lacinia, nunc nisl ultricies nisl, nec ultricies nisl nunc vel nisl.",
+    author: "Nguyễn Hoàng Nam",
+    date: "22/08/2023",
+    readTime: "9 phút đọc",
+    image: "/placeholder.svg",
+    tags: ["vật lý", "bài tập", "kỹ thuật giải"],
+    likes: 41,
+    comments: 9,
+    category: "Khoa học tự nhiên"
+  }
+];
 
 // Categories for filtering
 const categories = [

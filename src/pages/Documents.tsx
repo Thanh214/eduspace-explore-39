@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Download, FileText, Search, Filter, Tag, Clock, Calendar, CreditCard, Wallet, Plus } from "lucide-react";
@@ -38,7 +37,80 @@ import Footer from "@/components/Footer";
 import UserBalance from "@/components/UserBalance";
 
 // Mocked documents data
-const documentsData = [];
+const documentsData = [
+  {
+    id: 1,
+    title: "Đề thi thử THPT Quốc Gia môn Toán năm 2023",
+    description: "Bộ đề thi thử THPT Quốc Gia môn Toán với đáp án và hướng dẫn giải chi tiết",
+    subject: "Toán",
+    date: "2023-05-15",
+    downloads: 1245,
+    fileType: "PDF",
+    fileSize: "2.4 MB",
+    price: 20000,
+    tags: ["đề thi", "THPT", "toán học"]
+  },
+  {
+    id: 2,
+    title: "Tài liệu ôn thi THPT Quốc Gia môn Tiếng Anh",
+    description: "Tổng hợp ngữ pháp, từ vựng và các dạng bài tập thường gặp trong đề thi THPT Quốc Gia",
+    subject: "Tiếng Anh",
+    date: "2023-06-10",
+    downloads: 987,
+    fileType: "PDF",
+    fileSize: "3.8 MB",
+    price: 25000,
+    tags: ["tài liệu", "THPT", "tiếng anh"]
+  },
+  {
+    id: 3,
+    title: "Bộ đề cương ôn tập môn Vật Lý lớp 12",
+    description: "Đề cương ôn tập môn Vật Lý dành cho học sinh lớp 12 chuẩn bị cho kỳ thi THPT Quốc Gia",
+    subject: "Vật Lý",
+    date: "2023-04-22",
+    downloads: 756,
+    fileType: "PDF",
+    fileSize: "1.9 MB",
+    price: 15000,
+    tags: ["đề cương", "vật lý", "lớp 12"]
+  },
+  {
+    id: 4,
+    title: "Bài giảng Hóa học chương Hidrocacbon",
+    description: "Bài giảng chi tiết về chương Hidrocacbon trong chương trình Hóa học lớp 11",
+    subject: "Hóa Học",
+    date: "2023-03-18",
+    downloads: 602,
+    fileType: "PPTX",
+    fileSize: "4.2 MB",
+    price: 18000,
+    tags: ["bài giảng", "hóa học", "lớp 11"]
+  },
+  {
+    id: 5,
+    title: "Tuyển tập bài tập Ngữ Văn lớp 10",
+    description: "Tổng hợp các bài tập và đề kiểm tra Ngữ Văn dành cho học sinh lớp 10",
+    subject: "Ngữ Văn",
+    date: "2023-02-25",
+    downloads: 489,
+    fileType: "DOCX",
+    fileSize: "1.6 MB",
+    price: 12000,
+    tags: ["bài tập", "ngữ văn", "lớp 10"]
+  },
+  {
+    id: 6,
+    title: "Giáo án Sinh học lớp 9 - Học kỳ 2",
+    description: "Giáo án chi tiết môn Sinh học lớp 9 dành cho học kỳ 2 theo chương trình mới",
+    subject: "Sinh Học",
+    date: "2023-01-30",
+    downloads: 375,
+    fileType: "PDF",
+    fileSize: "2.1 MB",
+    price: 22000,
+    tags: ["giáo án", "sinh học", "lớp 9"]
+  }
+];
 
 const Documents = () => {
   const [searchTerm, setSearchTerm] = useState("");

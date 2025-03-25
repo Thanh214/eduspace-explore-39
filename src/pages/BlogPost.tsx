@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -15,7 +14,121 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 // Sample blog posts data
-const blogPosts = [];
+const blogPosts = [
+  {
+    id: 1,
+    title: "Phương pháp học tập hiệu quả cho học sinh THPT",
+    excerpt: "Khám phá các phương pháp học tập giúp nâng cao hiệu quả và kết quả học tập ở bậc THPT...",
+    content: `<p>Học tập hiệu quả là mục tiêu của mọi học sinh, đặc biệt là các bạn học sinh THPT đang chuẩn bị cho kỳ thi quan trọng. Dưới đây là một số phương pháp học tập hiệu quả mà bạn có thể áp dụng:</p>
+      <h2>1. Lập kế hoạch học tập</h2>
+      <p>Việc lập kế hoạch học tập rõ ràng sẽ giúp bạn quản lý thời gian hiệu quả và đảm bảo không bỏ sót nội dung quan trọng. Bạn nên:</p>
+      <ul>
+        <li>Lập danh sách các môn học và ưu tiên theo độ khó</li>
+        <li>Phân bổ thời gian hợp lý cho từng môn học</li>
+        <li>Đặt mục tiêu cụ thể cho mỗi buổi học</li>
+        <li>Dành thời gian cho việc ôn tập và củng cố kiến thức</li>
+      </ul>
+      <h2>2. Phương pháp Pomodoro</h2>
+      <p>Phương pháp Pomodoro là kỹ thuật học tập và làm việc hiệu quả, giúp duy trì sự tập trung và tránh mệt mỏi. Cách thực hiện:</p>
+      <ul>
+        <li>Học tập tập trung trong 25 phút</li>
+        <li>Nghỉ ngơi 5 phút</li>
+        <li>Sau 4 chu kỳ, nghỉ dài hơn (15-30 phút)</li>
+      </ul>
+      <h2>3. Học tập chủ động</h2>
+      <p>Học tập chủ động giúp bạn hiểu sâu và nhớ lâu hơn so với việc học thụ động. Một số cách học chủ động:</p>
+      <ul>
+        <li>Đặt câu hỏi và tìm câu trả lời</li>
+        <li>Giải thích lại kiến thức bằng ngôn ngữ của bản thân</li>
+        <li>Áp dụng kiến thức vào các bài tập và tình huống thực tế</li>
+        <li>Dạy lại kiến thức cho người khác</li>
+      </ul>
+      <h2>4. Sử dụng sơ đồ tư duy</h2>
+      <p>Sơ đồ tư duy giúp tổ chức và kết nối các ý tưởng, khái niệm một cách trực quan, từ đó dễ dàng hiểu và ghi nhớ kiến thức hơn.</p>
+      <h2>5. Ngủ đủ giấc</h2>
+      <p>Giấc ngủ đóng vai trò quan trọng trong việc củng cố trí nhớ và duy trì khả năng tập trung. Học sinh nên đảm bảo ngủ đủ 7-8 tiếng mỗi đêm.</p>`,
+    author: {
+      name: "Nguyễn Thanh Tùng",
+      avatar: "/placeholder.svg",
+      role: "Giáo viên THPT"
+    },
+    date: "12/05/2023",
+    image: "/lovable-uploads/428998de-7ab2-4da3-a560-bc75a976d5af.png",
+    tags: ["học tập", "thpt", "kỹ năng"],
+    likes: 45,
+    comments: [
+      {
+        id: 1,
+        user: {
+          name: "Lê Minh",
+          avatar: "/placeholder.svg"
+        },
+        content: "Bài viết rất hay và bổ ích. Cảm ơn thầy đã chia sẻ!",
+        date: "12/05/2023",
+        likes: 5
+      },
+      {
+        id: 2,
+        user: {
+          name: "Trần Hoa",
+          avatar: "/placeholder.svg"
+        },
+        content: "Em đã áp dụng phương pháp Pomodoro và thấy hiệu quả rõ rệt. Khuyến khích mọi người thử phương pháp này.",
+        date: "13/05/2023",
+        likes: 3
+      }
+    ],
+    category: "Kỹ năng học tập"
+  },
+  {
+    id: 2,
+    title: "10 bí quyết ôn thi đại học môn Toán hiệu quả",
+    excerpt: "Những bí quyết giúp bạn ôn tập và chuẩn bị tốt nhất cho kỳ thi đại học môn Toán...",
+    content: `<p>Môn Toán luôn là một trong những môn học quan trọng trong kỳ thi đại học. Dưới đây là 10 bí quyết giúp bạn ôn thi đại học môn Toán hiệu quả:</p>
+      <h2>1. Nắm vững kiến thức cơ bản</h2>
+      <p>Trước khi đi vào các bài tập nâng cao, bạn cần đảm bảo nắm vững các khái niệm, định lý và công thức cơ bản. Đây là nền tảng quan trọng để giải quyết các bài toán phức tạp.</p>
+      <h2>2. Phân loại dạng bài tập</h2>
+      <p>Phân loại các dạng bài tập thường gặp và tập trung vào những dạng bài chiếm tỷ trọng điểm cao trong đề thi. Điều này giúp bạn tiết kiệm thời gian và tăng hiệu quả ôn tập.</p>
+      <h2>3. Luyện đề thường xuyên</h2>
+      <p>Luyện đề là cách tốt nhất để làm quen với cấu trúc đề thi và tăng tốc độ làm bài. Bạn nên dành thời gian luyện đề đều đặn và chấm điểm nghiêm túc.</p>
+      <h2>4. Tìm hiểu và áp dụng các phương pháp giải nhanh</h2>
+      <p>Các phương pháp giải nhanh giúp bạn tiết kiệm thời gian trong phòng thi. Tuy nhiên, chỉ áp dụng khi bạn đã hiểu rõ bản chất của vấn đề.</p>
+      <h2>5. Học nhóm hiệu quả</h2>
+      <p>Học nhóm cùng bạn bè có thể giúp bạn hiểu sâu hơn về các vấn đề khó, chia sẻ kinh nghiệm và mở rộng cách nhìn về một bài toán.</p>
+      <h2>6. Tham khảo nhiều nguồn tài liệu</h2>
+      <p>Không nên chỉ dựa vào một cuốn sách hay một nguồn tài liệu. Tham khảo nhiều nguồn khác nhau sẽ giúp bạn có cái nhìn đa chiều và toàn diện hơn.</p>
+      <h2>7. Quản lý thời gian ôn tập</h2>
+      <p>Lập kế hoạch ôn tập chi tiết và tuân thủ nghiêm túc. Phân bổ thời gian hợp lý cho các phần khác nhau của môn Toán.</p>
+      <h2>8. Nghỉ ngơi hợp lý</h2>
+      <p>Đừng quên dành thời gian nghỉ ngơi hợp lý giữa các buổi học. Điều này giúp não bộ có thời gian tiếp thu và xử lý thông tin hiệu quả hơn.</p>
+      <h2>9. Giữ tâm lý thoải mái</h2>
+      <p>Áp lực thi cử có thể ảnh hưởng đến hiệu quả học tập. Hãy giữ tâm lý thoải mái và tự tin vào khả năng của bản thân.</p>
+      <h2>10. Ôn tập có trọng tâm, trọng điểm</h2>
+      <p>Không cần thiết phải học tất cả mọi thứ. Hãy tập trung vào những phần quan trọng, thường xuất hiện trong đề thi và phù hợp với khả năng của bản thân.</p>`,
+    author: {
+      name: "Trần Minh Hiếu",
+      avatar: "/placeholder.svg",
+      role: "Giáo viên Toán"
+    },
+    date: "05/06/2023",
+    image: "/lovable-uploads/23067a8d-b301-4b0b-80d3-1735c26da8ce.png",
+    tags: ["đại học", "thi cử", "toán học"],
+    likes: 72,
+    comments: [
+      {
+        id: 1,
+        user: {
+          name: "Phạm An",
+          avatar: "/placeholder.svg"
+        },
+        content: "Cảm ơn thầy đã chia sẻ những bí quyết quý báu. Em sẽ áp dụng ngay!",
+        date: "05/06/2023",
+        likes: 8
+      }
+    ],
+    category: "Ôn thi đại học"
+  }
+];
 
 const BlogPost = () => {
   const { id } = useParams();

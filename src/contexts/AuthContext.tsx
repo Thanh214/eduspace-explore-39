@@ -19,6 +19,7 @@ interface AuthContextType {
   register: (user: User, password: string) => Promise<void>;
   logout: () => void;
   updateUserProfile?: (updates: Partial<User>) => void; // Added method to update user profile
+  // We'll add test-related data here later if needed
 }
 
 const defaultUser = {

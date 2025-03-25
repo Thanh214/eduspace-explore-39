@@ -42,9 +42,6 @@ const Navbar = () => {
             <Link to="/documents" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 rounded-md transition-colors">
               Tài liệu
             </Link>
-            <Link to="/tests" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 rounded-md transition-colors">
-              Bài kiểm tra
-            </Link>
             <Link to="/about" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 rounded-md transition-colors">
               Giới thiệu
             </Link>
@@ -117,13 +114,6 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Tài liệu
-            </Link>
-            <Link 
-              to="/tests" 
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Bài kiểm tra
             </Link>
             <Link 
               to="/about" 

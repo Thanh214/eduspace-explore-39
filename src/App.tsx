@@ -18,7 +18,6 @@ import Documents from "./pages/Documents";
 import About from "./pages/About";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import Tests from "./pages/Tests";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -71,21 +70,6 @@ const App = () => (
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
-              </ProtectedRoute>
-            } />
-            <Route path="/tests" element={
-              <ProtectedRoute>
-                <Tests />
-              </ProtectedRoute>
-            } />
-            <Route path="/tests/:id" element={
-              <ProtectedRoute>
-                <Tests />
-              </ProtectedRoute>
-            } />
-            <Route path="/tests/:id/result" element={
-              <ProtectedRoute>
-                <Tests />
               </ProtectedRoute>
             } />
             

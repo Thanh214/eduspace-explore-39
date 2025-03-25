@@ -14,7 +14,7 @@ const courses = [
     duration: "36 giờ",
     rating: 4.9,
     image: "/lovable-uploads/428998de-7ab2-4da3-a560-bc75a976d5af.png",
-    features: ["Video bài giảng", "Bài tập tương tác", "Kiểm tra đánh giá", "Hỗ trợ 24/7"]
+    features: ["Video bài giảng", "Bài tập tương tác", "Bài kiểm tra sau mỗi chương", "Hỗ trợ 24/7"]
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const courses = [
     duration: "30 giờ",
     rating: 4.8,
     image: "/lovable-uploads/23067a8d-b301-4b0b-80d3-1735c26da8ce.png",
-    features: ["Luyện nghe, nói, đọc, viết", "Ngữ pháp và từ vựng", "Bài kiểm tra", "Phát âm chuẩn"]
+    features: ["Luyện nghe, nói, đọc, viết", "Ngữ pháp và từ vựng", "Bài kiểm tra mỗi chương", "Phát âm chuẩn"]
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const courses = [
     duration: "28 giờ",
     rating: 4.7,
     image: "/lovable-uploads/1768ad12-24d4-473b-9d8a-0e2514c39e42.png",
-    features: ["Phân tích tác phẩm", "Kỹ thuật làm văn", "Bài mẫu chất lượng", "Luyện viết văn"]
+    features: ["Phân tích tác phẩm", "Kỹ thuật làm văn", "Bài mẫu chất lượng", "Kiểm tra đánh giá"]
   }
 ];
 

@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Book, BookOpen, Check, ChevronDown, ChevronRight, 
@@ -268,22 +267,49 @@ const lessonContent = {
     <div class="bg-blue-50 p-4 rounded-md mb-4">
       <p><strong>Ví dụ:</strong> 15 ÷ 3 = 5</p>
     </div>`,
-    video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    attachments: [
-      { name: "Tài liệu bài giảng.pdf", size: "2.4 MB", type: "pdf" },
-      { name: "Bài tập thực hành.docx", size: "1.1 MB", type: "doc" }
-    ]
+    video: "https://www.youtube.com/embed/dQw4w9WgXcQ"
   }
+};
+
+// Function to find the next and previous lessons across chapters
+const findAdjacentLessons = (course, currentLessonId) => {
+  let allLessons = [];
+  
+  // Flatten all lessons across chapters
+  course.chapters.forEach(chapter => {
+    chapter.lessons.forEach(lesson => {
+      allLessons.push({
+        ...lesson,
+        chapterId: chapter.id,
+        chapterTitle: chapter.title
+      });
+    });
+  });
+  
+  // Find current lesson index
+  const currentIndex = allLessons.findIndex(lesson => lesson.id === currentLessonId);
+  
+  // Determine previous and next lessons
+  const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+  const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+  
+  return { prevLesson, nextLesson };
 };
 
 const CourseDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
   
   // Find the course based on the ID from URL params
   const course = coursesData.find(c => c.id.toString() === id);
+  
+  // Find adjacent lessons based on the selected lesson
+  const { prevLesson, nextLesson } = selectedLesson && course 
+    ? findAdjacentLessons(course, selectedLesson) 
+    : { prevLesson: null, nextLesson: null };
   
   if (!course) {
     return (
@@ -338,6 +364,14 @@ const CourseDetail = () => {
     } else {
       setSelectedLesson(lessonId);
       setActiveTab("content");
+    }
+  };
+
+  // Handle navigation to next or previous lesson
+  const handleLessonNavigation = (lesson) => {
+    if (lesson) {
+      setSelectedLesson(lesson.id);
+      // Keep the active tab as "content"
     }
   };
 
@@ -628,32 +662,19 @@ const CourseDetail = () => {
                       }}
                     />
                     
-                    {lessonContent[selectedLesson as keyof typeof lessonContent].attachments && (
-                      <div className="mt-8">
-                        <h3 className="text-lg font-semibold mb-4">Tài liệu đính kèm</h3>
-                        <div className="space-y-3">
-                          {lessonContent[selectedLesson as keyof typeof lessonContent].attachments.map((attachment, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                              <div className="flex items-center">
-                                <FileText className="w-5 h-5 text-blue-500 mr-3" />
-                                <span>{attachment.name}</span>
-                              </div>
-                              <div className="flex items-center space-x-3">
-                                <Badge variant="outline">{attachment.size}</Badge>
-                                <Button variant="outline" size="sm">Tải xuống</Button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
                     <div className="mt-8 flex justify-between">
-                      <Button variant="outline">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => handleLessonNavigation(prevLesson)}
+                        disabled={!prevLesson}
+                      >
                         <ChevronRight className="w-4 h-4 mr-1 rotate-180" />
                         Bài trước
                       </Button>
-                      <Button>
+                      <Button 
+                        onClick={() => handleLessonNavigation(nextLesson)}
+                        disabled={!nextLesson}
+                      >
                         Bài tiếp theo
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>

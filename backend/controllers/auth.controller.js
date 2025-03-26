@@ -15,6 +15,8 @@ exports.register = async (req, res) => {
   try {
     const { email, password, full_name, phone, address, dob } = req.body;
 
+    console.log('Registration data received:', { email, full_name, phone, address, dob });
+
     // Check if email exists
     const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     
@@ -35,11 +37,21 @@ exports.register = async (req, res) => {
       [email, hashedPassword, full_name, phone, address, dob]
     );
 
+    console.log('User inserted with ID:', result.insertId);
+
     // Get the new user
     const [newUser] = await db.query(
       'SELECT ID, email, full_name, avatar_url, phone, address, balance, dob FROM users WHERE ID = ?',
       [result.insertId]
     );
+
+    if (!newUser.length) {
+      console.error('Could not find newly created user');
+      return res.status(500).json({
+        status: 'error',
+        message: 'Lỗi trong quá trình đăng ký'
+      });
+    }
 
     // Generate token
     const token = generateToken(newUser[0].ID);
@@ -56,7 +68,8 @@ exports.register = async (req, res) => {
     console.error('Registration error:', error);
     res.status(500).json({
       status: 'error',
-      message: 'Lỗi trong quá trình đăng ký'
+      message: 'Lỗi trong quá trình đăng ký',
+      error: error.message
     });
   }
 };
@@ -100,7 +113,7 @@ exports.login = async (req, res) => {
       phone: user.phone,
       address: user.address,
       balance: user.balance,
-      dob: user.dob // Include dob field
+      dob: user.dob
     };
 
     res.status(200).json({
@@ -115,7 +128,8 @@ exports.login = async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({
       status: 'error',
-      message: 'Lỗi trong quá trình đăng nhập'
+      message: 'Lỗi trong quá trình đăng nhập',
+      error: error.message
     });
   }
 };

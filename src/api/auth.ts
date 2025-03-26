@@ -1,5 +1,5 @@
 
-import { API_URL, defaultHeaders, handleApiResponse } from './config';
+import { API_URL, defaultHeaders, handleApiResponse, authHeader } from './config';
 import { toast } from 'sonner';
 
 // User type definition
@@ -11,18 +11,24 @@ export interface User {
   phone?: string;
   address?: string;
   balance?: number;
-  dob?: string; // Add the dob (date of birth) property
+  dob?: string;
 }
 
-// Register a new user
-export const register = async (userData: {
+// Register data interface
+interface RegisterData {
   email: string;
   password: string;
   full_name: string;
   phone?: string;
   address?: string;
-}) => {
+  dob?: string;
+}
+
+// Register a new user
+export const register = async (userData: RegisterData) => {
   try {
+    console.log('Sending registration data:', userData);
+    
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: defaultHeaders,

@@ -12,14 +12,23 @@ interface User {
   address?: string;
   avatar?: string;
   balance?: number;
-  dob?: string; // Add dob field to the User interface
+  dob?: string;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  full_name: string;
+  phone?: string;
+  address?: string;
+  dob?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (userData: any) => Promise<void>;
+  register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
   updateUserProfile?: (updates: Partial<User>) => void;
   loading: boolean;
@@ -47,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             address: userData.address,
             avatar: userData.avatar_url,
             balance: userData.balance,
-            dob: userData.dob // Include dob field
+            dob: userData.dob
           });
         }
       } catch (error) {
@@ -73,28 +82,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         address: data.user.address,
         avatar: data.user.avatar,
         balance: data.user.balance,
-        dob: data.user.dob // Include dob field
+        dob: data.user.dob
       });
       
       toast.success('Đăng nhập thành công!');
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (userData: any) => {
+  const register = async (userData: RegisterData) => {
     setLoading(true);
     try {
-      const data = await authApi.register({
-        email: userData.email,
-        password: userData.password,
-        full_name: userData.name,
-        phone: userData.phone,
-        address: userData.address
-      });
+      console.log('Register with data:', userData);
+      const data = await authApi.register(userData);
       
       setUser({
         id: data.user.ID,
@@ -104,13 +109,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         address: data.user.address,
         avatar: data.user.avatar_url,
         balance: data.user.balance,
-        dob: data.user.dob // Include dob field
+        dob: data.user.dob
       });
       
-      toast.success('Đăng ký thành công!');
-      navigate('/');
+      return data;
     } catch (error) {
       console.error('Register error:', error);
+      throw error;
     } finally {
       setLoading(false);
     }

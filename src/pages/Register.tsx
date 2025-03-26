@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, Eye, EyeOff, UserCheck, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,16 +35,21 @@ const Register = () => {
     setIsLoading(true);
 
     try {
+      // Đảm bảo dữ liệu được gửi trong đúng format
       await register({
-        name,
         email,
         password,
+        full_name: name,
         phone,
         address,
         dob
       });
+      
+      toast.success("Đăng ký thành công! Bạn sẽ được chuyển hướng tới trang chủ.");
+      navigate('/');
     } catch (error) {
       console.error("Đăng ký thất bại:", error);
+      toast.error("Đăng ký thất bại. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }

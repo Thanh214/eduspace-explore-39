@@ -1,76 +1,115 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/hooks/use-toast";
+import { toast } from 'sonner';
+import * as authApi from '@/api/auth';
 
 interface User {
-  name: string;
+  id: number;
   email: string;
-  phone: string;
-  address: string;
-  dob: string;
-  avatar?: string; // Added avatar property as optional
+  name: string;
+  phone?: string;
+  address?: string;
+  avatar?: string;
+  balance?: number;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (user: User, password: string) => Promise<void>;
+  register: (userData: any) => Promise<void>;
   logout: () => void;
-  updateUserProfile?: (updates: Partial<User>) => void; // Added method to update user profile
-  // We'll add test-related data here later if needed
+  updateUserProfile?: (updates: Partial<User>) => void;
+  loading: boolean;
 }
-
-const defaultUser = {
-  name: "Nguyễn Văn A",
-  email: "example@gmail.com",
-  phone: "0987654321",
-  address: "Hà Nội, Việt Nam",
-  dob: "01/01/2000",
-  avatar: "https://github.com/shadcn.png", // Default avatar
-};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Check for saved user in localStorage on initial load
+  // Check for saved token and user data on initial load
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    const checkAuth = async () => {
+      try {
+        const userData = await authApi.getCurrentUser();
+        
+        if (userData) {
+          setUser({
+            id: userData.ID,
+            email: userData.email,
+            name: userData.full_name,
+            phone: userData.phone,
+            address: userData.address,
+            avatar: userData.avatar_url,
+            balance: userData.balance
+          });
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
-    // In a real app, we would validate with a backend
-    // For now, we'll simulate a successful login
-    const userData = defaultUser;
-    
-    // Save user to state and localStorage
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    
-    toast({
-      title: "Đăng nhập thành công!",
-      description: "Bạn đã đăng nhập vào hệ thống.",
-    });
+    setLoading(true);
+    try {
+      const data = await authApi.login(email, password);
+      
+      setUser({
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        phone: data.user.phone,
+        address: data.user.address,
+        avatar: data.user.avatar,
+        balance: data.user.balance
+      });
+      
+      toast.success('Đăng nhập thành công!');
+      navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const register = async (userData: User, password: string) => {
-    // In a real app, we would send this to a backend
-    // For now, we'll simulate a successful registration
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    
-    toast({
-      title: "Đăng ký thành công!",
-      description: "Tài khoản của bạn đã được tạo.",
-    });
+  const register = async (userData: any) => {
+    setLoading(true);
+    try {
+      const data = await authApi.register({
+        email: userData.email,
+        password: userData.password,
+        full_name: userData.name,
+        phone: userData.phone,
+        address: userData.address
+      });
+      
+      setUser({
+        id: data.user.ID,
+        email: data.user.email,
+        name: data.user.full_name,
+        phone: data.user.phone,
+        address: data.user.address,
+        avatar: data.user.avatar_url,
+        balance: data.user.balance
+      });
+      
+      toast.success('Đăng ký thành công!');
+      navigate('/');
+    } catch (error) {
+      console.error('Register error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateUserProfile = (updates: Partial<User>) => {
@@ -79,22 +118,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
       
-      toast({
-        title: "Cập nhật thành công",
-        description: "Thông tin cá nhân của bạn đã được cập nhật.",
-      });
+      toast.success('Cập nhật thành công');
     }
   };
 
   const logout = () => {
+    authApi.logout();
     setUser(null);
-    localStorage.removeItem('user');
     navigate('/');
     
-    toast({
-      title: "Đăng xuất thành công",
-      description: "Bạn đã đăng xuất khỏi hệ thống.",
-    });
+    toast.success('Đăng xuất thành công');
   };
 
   return (
@@ -104,7 +137,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       login, 
       register, 
       logout,
-      updateUserProfile 
+      updateUserProfile,
+      loading
     }}>
       {children}
     </AuthContext.Provider>

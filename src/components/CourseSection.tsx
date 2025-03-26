@@ -1,14 +1,64 @@
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getAllCourses } from '@/api/courses';
+import { toast } from 'sonner';
 
-// Đã xóa dữ liệu mẫu
-const courses = [];
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  level: string;
+  image: string | null;
+  lessons: number;
+  students: number;
+  rating?: number;
+  features?: string[];
+  duration?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const CourseSection = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const coursesData = await getAllCourses();
+        
+        // Add some mock data that will come from the API later
+        const enrichedCourses = coursesData.map((course: Course) => ({
+          ...course,
+          rating: (Math.random() * 2 + 3).toFixed(1), // Random rating between 3.0 and 5.0
+          duration: `${Math.floor(Math.random() * 20 + 5)} giờ`, // Random duration
+          features: [
+            'Học tập mọi nơi, mọi lúc',
+            'Bài tập thực hành',
+            'Chứng chỉ hoàn thành',
+            'Hỗ trợ trực tuyến 24/7'
+          ]
+        }));
+        
+        setCourses(enrichedCourses);
+      } catch (err) {
+        console.error('Failed to fetch courses:', err);
+        setError('Không thể tải danh sách khóa học');
+        toast.error('Không thể tải danh sách khóa học');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,7 +69,29 @@ const CourseSection = () => {
           </p>
         </div>
         
-        {courses.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="bg-white rounded-2xl shadow-medium overflow-hidden hover:shadow-hard transition-shadow duration-300">
+                <div className="h-48 bg-gray-200 animate-pulse"></div>
+                <div className="p-6">
+                  <div className="h-7 bg-gray-200 animate-pulse mb-4"></div>
+                  <div className="h-4 bg-gray-200 animate-pulse mb-2"></div>
+                  <div className="h-4 bg-gray-200 animate-pulse mb-2"></div>
+                  <div className="h-4 bg-gray-200 animate-pulse mb-4 w-2/3"></div>
+                  <div className="h-10 bg-gray-200 animate-pulse mt-6"></div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : error ? (
+          <Card className="text-center p-10">
+            <CardContent className="pt-6">
+              <p className="text-gray-500">{error}</p>
+              <Button onClick={() => window.location.reload()} className="mt-4">Thử lại</Button>
+            </CardContent>
+          </Card>
+        ) : courses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {courses.map((course, index) => (
               <motion.div
@@ -32,7 +104,7 @@ const CourseSection = () => {
               >
                 <div className="relative h-48 overflow-hidden">
                   <img 
-                    src={course.image} 
+                    src={course.image || "/placeholder.svg"} 
                     alt={course.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                   />
@@ -60,7 +132,7 @@ const CourseSection = () => {
                   <div className="mb-6">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Khóa học bao gồm:</h4>
                     <ul className="space-y-1">
-                      {course.features.map((feature, idx) => (
+                      {course.features?.map((feature, idx) => (
                         <li key={idx} className="flex items-center text-gray-600 text-sm">
                           <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                           <span>{feature}</span>

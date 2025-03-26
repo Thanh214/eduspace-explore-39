@@ -12,6 +12,7 @@ interface User {
   address?: string;
   avatar?: string;
   balance?: number;
+  dob?: string; // Add dob field to the User interface
 }
 
 interface AuthContextType {
@@ -45,7 +46,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             phone: userData.phone,
             address: userData.address,
             avatar: userData.avatar_url,
-            balance: userData.balance
+            balance: userData.balance,
+            dob: userData.dob // Include dob field
           });
         }
       } catch (error) {
@@ -70,7 +72,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phone: data.user.phone,
         address: data.user.address,
         avatar: data.user.avatar,
-        balance: data.user.balance
+        balance: data.user.balance,
+        dob: data.user.dob // Include dob field
       });
       
       toast.success('Đăng nhập thành công!');
@@ -100,7 +103,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phone: data.user.phone,
         address: data.user.address,
         avatar: data.user.avatar_url,
-        balance: data.user.balance
+        balance: data.user.balance,
+        dob: data.user.dob // Include dob field
       });
       
       toast.success('Đăng ký thành công!');

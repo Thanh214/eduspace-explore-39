@@ -11,6 +11,7 @@ export interface User {
   phone?: string;
   address?: string;
   balance?: number;
+  dob?: string; // Add the dob (date of birth) property
 }
 
 // Register a new user

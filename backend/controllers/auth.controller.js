@@ -37,7 +37,7 @@ exports.register = async (req, res) => {
 
     // Get the new user
     const [newUser] = await db.query(
-      'SELECT ID, email, full_name, avatar_url, phone, address, balance FROM users WHERE ID = ?',
+      'SELECT ID, email, full_name, avatar_url, phone, address, balance, dob FROM users WHERE ID = ?',
       [result.insertId]
     );
 
@@ -99,7 +99,8 @@ exports.login = async (req, res) => {
       avatar: user.avatar_url,
       phone: user.phone,
       address: user.address,
-      balance: user.balance
+      balance: user.balance,
+      dob: user.dob // Include dob field
     };
 
     res.status(200).json({

@@ -13,7 +13,7 @@ const generateToken = (id) => {
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { email, password, full_name, phone, address } = req.body;
+    const { email, password, full_name, phone, address, dob } = req.body;
 
     // Check if email exists
     const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
@@ -31,8 +31,8 @@ exports.register = async (req, res) => {
 
     // Create new user
     const [result] = await db.query(
-      'INSERT INTO users (email, password_hash, full_name, phone, address) VALUES (?, ?, ?, ?, ?)',
-      [email, hashedPassword, full_name, phone, address]
+      'INSERT INTO users (email, password_hash, full_name, phone, address, dob) VALUES (?, ?, ?, ?, ?, ?)',
+      [email, hashedPassword, full_name, phone, address, dob]
     );
 
     // Get the new user

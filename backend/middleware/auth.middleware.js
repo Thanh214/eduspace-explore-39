@@ -25,7 +25,7 @@ exports.protect = async (req, res, next) => {
 
     // Check if user exists
     const [user] = await db.query(
-      'SELECT ID, email, full_name, avatar_url, phone, address, balance FROM users WHERE ID = ?',
+      'SELECT ID, email, full_name, avatar_url, phone, address, balance, dob FROM users WHERE ID = ?',
       [decoded.id]
     );
 
@@ -40,6 +40,7 @@ exports.protect = async (req, res, next) => {
     req.user = user[0];
     next();
   } catch (error) {
+    console.error('Auth middleware error:', error);
     return res.status(401).json({
       status: 'error',
       message: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'

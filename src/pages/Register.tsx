@@ -1,49 +1,52 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Eye, EyeOff, UserCheck } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, UserCheck, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [dob, setDob] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      toast({
-        title: "Mật khẩu không khớp",
-        description: "Vui lòng kiểm tra lại mật khẩu xác nhận.",
-        variant: "destructive"
-      });
+      toast.error("Mật khẩu không khớp. Vui lòng kiểm tra lại mật khẩu xác nhận.");
       return;
     }
     
     setIsLoading(true);
 
-    // Simulating API call
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Đăng ký thành công!",
-        description: "Tài khoản của bạn đã được tạo thành công.",
+    try {
+      await register({
+        name,
+        email,
+        password,
+        phone,
+        address,
+        dob
       });
-      // Redirect to profile page after successful registration
-      navigate("/profile");
-    }, 1500);
+    } catch (error) {
+      console.error("Đăng ký thất bại:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -112,6 +115,56 @@ const Register = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    Số điện thoại
+                  </label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    placeholder="0123456789"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+                    Ngày sinh
+                  </label>
+                  <div className="mt-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Calendar className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <Input
+                      id="dob"
+                      name="dob"
+                      type="date"
+                      className="pl-10"
+                      value={dob}
+                      onChange={(e) => setDob(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                  Địa chỉ
+                </label>
+                <Input
+                  id="address"
+                  name="address"
+                  type="text"
+                  placeholder="Địa chỉ của bạn"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
               </div>
 
               <div>

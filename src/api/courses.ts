@@ -34,11 +34,11 @@ export interface CourseDetail extends Course {
 // Get all courses
 export const getAllCourses = async () => {
   try {
+    const token = localStorage.getItem('token');
+    const headers = token ? authHeader(token) : defaultHeaders;
+
     const response = await fetch(`${API_URL}/courses`, {
-      headers: {
-        ...defaultHeaders,
-        ...authHeader(),
-      },
+      headers,
     });
 
     const data = await handleApiResponse(response);
@@ -52,11 +52,11 @@ export const getAllCourses = async () => {
 // Get a single course
 export const getCourse = async (id: string | number) => {
   try {
+    const token = localStorage.getItem('token');
+    const headers = token ? authHeader(token) : defaultHeaders;
+
     const response = await fetch(`${API_URL}/courses/${id}`, {
-      headers: {
-        ...defaultHeaders,
-        ...authHeader(),
-      },
+      headers,
     });
 
     const data = await handleApiResponse(response);
@@ -70,11 +70,13 @@ export const getCourse = async (id: string | number) => {
 // Get user enrolled courses
 export const getEnrolledCourses = async () => {
   try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
     const response = await fetch(`${API_URL}/courses/user/enrolled`, {
-      headers: {
-        ...defaultHeaders,
-        ...authHeader(),
-      },
+      headers: authHeader(token),
     });
 
     const data = await handleApiResponse(response);
@@ -88,12 +90,14 @@ export const getEnrolledCourses = async () => {
 // Enroll in a course
 export const enrollCourse = async (courseId: number) => {
   try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
     const response = await fetch(`${API_URL}/courses/${courseId}/enroll`, {
       method: 'POST',
-      headers: {
-        ...defaultHeaders,
-        ...authHeader(),
-      },
+      headers: authHeader(token),
     });
 
     const data = await handleApiResponse(response);

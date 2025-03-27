@@ -154,6 +154,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Export as a named constant function to fix HMR issues
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

@@ -1,5 +1,5 @@
 
-// API base URL - Sử dụng URL tương đối thay vì localhost
+// API base URL - Use relative URL instead of localhost
 export const API_URL = '/api';
 
 // Default headers for API requests

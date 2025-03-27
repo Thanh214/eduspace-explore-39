@@ -1,3 +1,4 @@
+
 import { API_URL, defaultHeaders, handleApiResponse, authHeader } from './config';
 import { toast } from 'sonner';
 
@@ -10,7 +11,6 @@ export interface User {
   phone?: string;
   address?: string;
   balance?: number;
-  dob?: string;
 }
 
 // Register data interface
@@ -27,15 +27,6 @@ interface RegisterData {
 export const register = async (userData: RegisterData) => {
   try {
     console.log('Sending registration data:', userData);
-    
-    // Đảm bảo định dạng ngày tháng đúng nếu có
-    if (userData.dob) {
-      // Chuyển đổi ngày tháng sang định dạng YYYY-MM-DD nếu cần
-      const date = new Date(userData.dob);
-      if (!isNaN(date.getTime())) {
-        userData.dob = date.toISOString().split('T')[0];
-      }
-    }
     
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',

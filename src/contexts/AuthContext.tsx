@@ -12,7 +12,6 @@ interface User {
   address?: string;
   avatar?: string;
   balance?: number;
-  dob?: string;
 }
 
 interface RegisterData {
@@ -55,8 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             phone: userData.phone,
             address: userData.address,
             avatar: userData.avatar,
-            balance: userData.balance,
-            dob: userData.dob
+            balance: userData.balance
           });
         }
       } catch (error) {
@@ -81,8 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phone: data.user.phone,
         address: data.user.address,
         avatar: data.user.avatar,
-        balance: data.user.balance,
-        dob: data.user.dob
+        balance: data.user.balance
       });
       
       toast.success('Đăng nhập thành công!');
@@ -108,8 +105,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phone: data.user.phone,
         address: data.user.address,
         avatar: data.user.avatar,
-        balance: data.user.balance,
-        dob: data.user.dob
+        balance: data.user.balance
       });
       
       return data;

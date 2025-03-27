@@ -57,17 +57,18 @@ exports.register = async (req, res) => {
     const formattedDob = formatDateForMySQL(dob);
     console.log('Formatted DOB:', formattedDob);
 
-    // Create new user
+    // Create new user - kiểm tra cấu trúc bảng để xác định trường nào nên sử dụng
+    // Xóa trường dob khỏi câu lệnh SQL vì nó không tồn tại trong cơ sở dữ liệu
     const [result] = await db.query(
-      'INSERT INTO users (email, password_hash, full_name, phone, address, dob) VALUES (?, ?, ?, ?, ?, ?)',
-      [email, hashedPassword, full_name, phone, address, formattedDob]
+      'INSERT INTO users (email, password_hash, full_name, phone, address) VALUES (?, ?, ?, ?, ?)',
+      [email, hashedPassword, full_name, phone, address]
     );
 
     console.log('User inserted with ID:', result.insertId);
 
     // Get the new user
     const [newUser] = await db.query(
-      'SELECT ID, email, full_name, avatar_url, phone, address, balance, dob FROM users WHERE ID = ?',
+      'SELECT ID, email, full_name, avatar_url, phone, address, balance FROM users WHERE ID = ?',
       [result.insertId]
     );
 
@@ -90,8 +91,7 @@ exports.register = async (req, res) => {
       avatar: newUser[0].avatar_url,
       phone: newUser[0].phone,
       address: newUser[0].address,
-      balance: newUser[0].balance,
-      dob: newUser[0].dob
+      balance: newUser[0].balance
     };
 
     res.status(201).json({
@@ -150,8 +150,7 @@ exports.login = async (req, res) => {
       avatar: user.avatar_url,
       phone: user.phone,
       address: user.address,
-      balance: user.balance,
-      dob: user.dob
+      balance: user.balance
     };
 
     res.status(200).json({

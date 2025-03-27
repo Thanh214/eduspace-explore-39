@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -16,7 +17,6 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [dob, setDob] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,15 +34,12 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      console.log("Registering with DOB:", dob);
-      
       await register({
         email,
         password,
         full_name: name,
         phone,
-        address,
-        dob
+        address
       });
       
       toast.success("Đăng ký thành công! Bạn sẽ được chuyển hướng tới trang chủ.");
@@ -138,39 +135,20 @@ const Register = () => {
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
-                
-                <div>
-                  <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
-                    Ngày sinh
-                  </label>
-                  <div className="mt-1 relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Calendar className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <Input
-                      id="dob"
-                      name="dob"
-                      type="date"
-                      className="pl-10"
-                      value={dob}
-                      onChange={(e) => setDob(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
 
-              <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                  Địa chỉ
-                </label>
-                <Input
-                  id="address"
-                  name="address"
-                  type="text"
-                  placeholder="Địa chỉ của bạn"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                    Địa chỉ
+                  </label>
+                  <Input
+                    id="address"
+                    name="address"
+                    type="text"
+                    placeholder="Địa chỉ của bạn"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
               </div>
 
               <div>

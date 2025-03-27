@@ -1,6 +1,6 @@
 
-// API base URL - Sửa thành URL đúng của backend
-export const API_URL = 'http://localhost:5000/api';
+// API base URL - Sử dụng URL tương đối thay vì localhost
+export const API_URL = '/api';
 
 // Default headers for API requests
 export const defaultHeaders = {

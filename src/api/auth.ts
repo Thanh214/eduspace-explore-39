@@ -1,4 +1,3 @@
-
 import { API_URL, defaultHeaders, handleApiResponse, authHeader } from './config';
 import { toast } from 'sonner';
 
@@ -29,6 +28,15 @@ export const register = async (userData: RegisterData) => {
   try {
     console.log('Sending registration data:', userData);
     
+    // Đảm bảo định dạng ngày tháng đúng nếu có
+    if (userData.dob) {
+      // Chuyển đổi ngày tháng sang định dạng YYYY-MM-DD nếu cần
+      const date = new Date(userData.dob);
+      if (!isNaN(date.getTime())) {
+        userData.dob = date.toISOString().split('T')[0];
+      }
+    }
+    
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: defaultHeaders,
@@ -45,6 +53,7 @@ export const register = async (userData: RegisterData) => {
     return data.data;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Đã xảy ra lỗi khi đăng ký';
+    console.error('Register error:', error);
     toast.error(message);
     throw error;
   }

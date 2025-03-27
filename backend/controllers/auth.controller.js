@@ -10,6 +10,28 @@ const generateToken = (id) => {
   });
 };
 
+// Helper function to format date for MySQL
+const formatDateForMySQL = (dateString) => {
+  if (!dateString) return null;
+  
+  try {
+    // Parse the date string
+    const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      console.log('Invalid date format:', dateString);
+      return null;
+    }
+    
+    // Format to YYYY-MM-DD
+    return date.toISOString().split('T')[0];
+  } catch (error) {
+    console.error('Date formatting error:', error);
+    return null;
+  }
+};
+
 // Register a new user
 exports.register = async (req, res) => {
   try {
@@ -32,7 +54,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Format dob to MySQL date format if provided
-    const formattedDob = dob ? new Date(dob).toISOString().split('T')[0] : null;
+    const formattedDob = formatDateForMySQL(dob);
     console.log('Formatted DOB:', formattedDob);
 
     // Create new user

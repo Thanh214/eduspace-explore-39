@@ -14,6 +14,7 @@ interface User {
   balance?: number;
 }
 
+// Cập nhật RegisterData không có trường dob
 interface RegisterData {
   email: string;
   password: string;

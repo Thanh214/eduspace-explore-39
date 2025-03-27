@@ -1,1 +1,1 @@
--- Đã xóa câu lệnh ALTER TABLE `users` ADD `dob` DATE NULL DEFAULT NULL AFTER `balance`;
+-- Bảng users không có trường dob, phù hợp với database.sql

@@ -10,34 +10,12 @@ const generateToken = (id) => {
   });
 };
 
-// Helper function to format date for MySQL
-const formatDateForMySQL = (dateString) => {
-  if (!dateString) return null;
-  
-  try {
-    // Parse the date string
-    const date = new Date(dateString);
-    
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      console.log('Invalid date format:', dateString);
-      return null;
-    }
-    
-    // Format to YYYY-MM-DD
-    return date.toISOString().split('T')[0];
-  } catch (error) {
-    console.error('Date formatting error:', error);
-    return null;
-  }
-};
-
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { email, password, full_name, phone, address, dob } = req.body;
+    const { email, password, full_name, phone, address } = req.body;
 
-    console.log('Registration data received:', { email, full_name, phone, address, dob });
+    console.log('Registration data received:', { email, full_name, phone, address });
 
     // Check if email exists
     const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
@@ -53,12 +31,7 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Format dob to MySQL date format if provided
-    const formattedDob = formatDateForMySQL(dob);
-    console.log('Formatted DOB:', formattedDob);
-
-    // Create new user - kiểm tra cấu trúc bảng để xác định trường nào nên sử dụng
-    // Xóa trường dob khỏi câu lệnh SQL vì nó không tồn tại trong cơ sở dữ liệu
+    // Create new user - phù hợp với cấu trúc bảng users
     const [result] = await db.query(
       'INSERT INTO users (email, password_hash, full_name, phone, address) VALUES (?, ?, ?, ?, ?)',
       [email, hashedPassword, full_name, phone, address]

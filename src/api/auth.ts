@@ -13,7 +13,7 @@ export interface User {
   balance?: number;
 }
 
-// Register data interface
+// Register data interface - không có trường dob
 interface RegisterData {
   email: string;
   password: string;

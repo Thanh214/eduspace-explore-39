@@ -31,10 +31,14 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Format dob to MySQL date format if provided
+    const formattedDob = dob ? new Date(dob).toISOString().split('T')[0] : null;
+    console.log('Formatted DOB:', formattedDob);
+
     // Create new user
     const [result] = await db.query(
       'INSERT INTO users (email, password_hash, full_name, phone, address, dob) VALUES (?, ?, ?, ?, ?, ?)',
-      [email, hashedPassword, full_name, phone, address, dob]
+      [email, hashedPassword, full_name, phone, address, formattedDob]
     );
 
     console.log('User inserted with ID:', result.insertId);
@@ -56,11 +60,23 @@ exports.register = async (req, res) => {
     // Generate token
     const token = generateToken(newUser[0].ID);
 
+    // Transform user data to match frontend expectations
+    const userData = {
+      id: newUser[0].ID,
+      email: newUser[0].email,
+      name: newUser[0].full_name,
+      avatar: newUser[0].avatar_url,
+      phone: newUser[0].phone,
+      address: newUser[0].address,
+      balance: newUser[0].balance,
+      dob: newUser[0].dob
+    };
+
     res.status(201).json({
       status: 'success',
       message: 'Đăng ký thành công',
       data: {
-        user: newUser[0],
+        user: userData,
         token
       }
     });

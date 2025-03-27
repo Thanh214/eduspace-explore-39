@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -35,7 +34,8 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      // Đảm bảo dữ liệu được gửi trong đúng format
+      console.log("Registering with DOB:", dob);
+      
       await register({
         email,
         password,

@@ -1,25 +1,30 @@
 
-// API configuration
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// API base URL - Sửa thành URL đúng của backend
+export const API_URL = 'http://localhost:5000/api';
 
-// Default headers
+// Default headers for API requests
 export const defaultHeaders = {
-  'Content-Type': 'application/json',
+  'Content-Type': 'application/json'
 };
 
-// Handle API responses
+// Authentication header for protected routes
+export const authHeader = (token: string) => ({
+  ...defaultHeaders,
+  Authorization: `Bearer ${token}`
+});
+
+// Handle API response - Check for errors and parse JSON
 export const handleApiResponse = async (response: Response) => {
-  const data = await response.json();
-  
   if (!response.ok) {
-    throw new Error(data.message || 'Đã xảy ra lỗi');
+    // Try to parse error message from response
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Đã xảy ra lỗi');
+    } catch (error) {
+      // If cannot parse JSON, use status text
+      throw new Error(response.statusText || 'Đã xảy ra lỗi');
+    }
   }
   
-  return data;
-};
-
-// Add auth token to request
-export const authHeader = () => {
-  const token = localStorage.getItem('token');
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return await response.json();
 };

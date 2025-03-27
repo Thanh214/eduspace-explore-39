@@ -33,6 +33,7 @@ export const register = async (userData: RegisterData) => {
       method: 'POST',
       headers: defaultHeaders,
       body: JSON.stringify(userData),
+      credentials: 'include'
     });
 
     const data = await handleApiResponse(response);
@@ -56,6 +57,7 @@ export const login = async (email: string, password: string) => {
       method: 'POST',
       headers: defaultHeaders,
       body: JSON.stringify({ email, password }),
+      credentials: 'include'
     });
 
     const data = await handleApiResponse(response);
@@ -86,6 +88,7 @@ export const getCurrentUser = async () => {
         ...defaultHeaders,
         Authorization: `Bearer ${token}`,
       },
+      credentials: 'include'
     });
 
     const data = await handleApiResponse(response);

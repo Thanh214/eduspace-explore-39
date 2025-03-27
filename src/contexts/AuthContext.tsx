@@ -49,12 +49,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (userData) {
           setUser({
-            id: userData.ID,
+            id: userData.id,
             email: userData.email,
-            name: userData.full_name,
+            name: userData.name,
             phone: userData.phone,
             address: userData.address,
-            avatar: userData.avatar_url,
+            avatar: userData.avatar,
             balance: userData.balance,
             dob: userData.dob
           });
@@ -102,12 +102,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await authApi.register(userData);
       
       setUser({
-        id: data.user.ID,
+        id: data.user.id,
         email: data.user.email,
-        name: data.user.full_name,
+        name: data.user.name,
         phone: data.user.phone,
         address: data.user.address,
-        avatar: data.user.avatar_url,
+        avatar: data.user.avatar,
         balance: data.user.balance,
         dob: data.user.dob
       });

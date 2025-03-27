@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, CalendarDays, Mail, Phone, MapPin, Lock, LogOut } from 'lucide-react';
@@ -110,7 +109,11 @@ const Profile = () => {
                 <Card className="sticky top-24">
                   <CardHeader className="text-center">
                     <div className="mx-auto mb-4">
-                      <AvatarUpload />
+                      <AvatarUpload 
+                        fallback={user.name.substring(0, 2).toUpperCase()} 
+                        currentAvatar={user.avatar}
+                        onAvatarChange={(url) => updateUserProfile?.({ avatar: url })}
+                      />
                     </div>
                     <CardTitle className="text-2xl">{user.name}</CardTitle>
                     <CardDescription>{user.email}</CardDescription>

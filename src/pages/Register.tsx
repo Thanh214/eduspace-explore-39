@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -20,11 +21,46 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    if (!name.trim()) {
+      toast.error("Vui lòng nhập họ và tên");
+      return false;
+    }
+    
+    if (!email.trim()) {
+      toast.error("Vui lòng nhập email");
+      return false;
+    }
+    
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Email không hợp lệ");
+      return false;
+    }
+    
+    if (password.length < 6) {
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự");
+      return false;
+    }
+    
+    if (password !== confirmPassword) {
+      toast.error("Mật khẩu không khớp");
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    
+    if (!validateForm()) {
+      return;
+    }
     
     if (password !== confirmPassword) {
       toast.error("Mật khẩu không khớp. Vui lòng kiểm tra lại mật khẩu xác nhận.");
@@ -42,11 +78,10 @@ const Register = () => {
         address
       });
       
-      toast.success("Đăng ký thành công! Bạn sẽ được chuyển hướng tới trang chủ.");
-      navigate('/');
+      // Toast success is handled in the AuthContext
     } catch (error) {
       console.error("Đăng ký thất bại:", error);
-      toast.error("Đăng ký thất bại. Vui lòng thử lại sau.");
+      setError(error instanceof Error ? error.message : "Đăng ký thất bại. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +108,12 @@ const Register = () => {
               </Link>
             </p>
           </div>
+
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">

@@ -13,7 +13,7 @@ export interface User {
   balance?: number;
 }
 
-// Register data interface - không có trường dob
+// Register data interface - no dob field, matches the users table in database.sql
 interface RegisterData {
   email: string;
   password: string;
@@ -34,11 +34,18 @@ export const register = async (userData: RegisterData) => {
       credentials: 'include'
     });
 
+    console.log('Registration response status:', response.status);
+    
     const data = await handleApiResponse(response);
+    console.log('Registration response data:', data);
     
     // Store token and user data
-    localStorage.setItem('token', data.data.token);
-    localStorage.setItem('user', JSON.stringify(data.data.user));
+    if (data.data && data.data.token) {
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('user', JSON.stringify(data.data.user));
+    } else {
+      console.error('No token or user data in response');
+    }
     
     return data.data;
   } catch (error) {

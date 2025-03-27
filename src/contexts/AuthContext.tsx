@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -14,7 +13,6 @@ interface User {
   balance?: number;
 }
 
-// Cập nhật RegisterData không có trường dob
 interface RegisterData {
   email: string;
   password: string;
@@ -40,7 +38,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Check for saved token and user data on initial load
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -72,20 +69,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const data = await authApi.login(email, password);
       
-      setUser({
-        id: data.user.id,
-        email: data.user.email,
-        name: data.user.name,
-        phone: data.user.phone,
-        address: data.user.address,
-        avatar: data.user.avatar,
-        balance: data.user.balance
-      });
-      
-      toast.success('Đăng nhập thành công!');
-      navigate('/');
+      if (data && data.user) {
+        setUser({
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          phone: data.user.phone,
+          address: data.user.address,
+          avatar: data.user.avatar,
+          balance: data.user.balance
+        });
+        
+        toast.success('Đăng nhập thành công!');
+        navigate('/');
+      } else {
+        throw new Error('Không nhận được dữ liệu người dùng');
+      }
     } catch (error) {
       console.error('Login error:', error);
+      toast.error(error instanceof Error ? error.message : 'Đăng nhập thất bại');
       throw error;
     } finally {
       setLoading(false);
@@ -98,19 +100,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Register with data:', userData);
       const data = await authApi.register(userData);
       
-      setUser({
-        id: data.user.id,
-        email: data.user.email,
-        name: data.user.name,
-        phone: data.user.phone,
-        address: data.user.address,
-        avatar: data.user.avatar,
-        balance: data.user.balance
-      });
-      
-      return data;
+      if (data && data.user) {
+        setUser({
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          phone: data.user.phone,
+          address: data.user.address,
+          avatar: data.user.avatar,
+          balance: data.user.balance
+        });
+        
+        toast.success('Đăng ký thành công!');
+        navigate('/');
+        return data;
+      } else {
+        throw new Error('Không nhận được dữ liệu người dùng');
+      }
     } catch (error) {
       console.error('Register error:', error);
+      toast.error(error instanceof Error ? error.message : 'Đăng ký thất bại');
       throw error;
     } finally {
       setLoading(false);
@@ -152,7 +161,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// Use a function declaration for better HMR compatibility
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

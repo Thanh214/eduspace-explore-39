@@ -20,7 +20,6 @@ interface RegisterData {
   full_name: string;
   phone?: string;
   address?: string;
-  dob?: string;
 }
 
 // Register a new user

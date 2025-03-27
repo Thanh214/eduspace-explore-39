@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Eye, EyeOff, UserCheck, Calendar } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, UserCheck, Phone, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -125,29 +125,41 @@ const Register = () => {
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
                     Số điện thoại
                   </label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    placeholder="0123456789"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
+                  <div className="mt-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Phone className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="0123456789"
+                      className="pl-10"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 <div>
                   <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                     Địa chỉ
                   </label>
-                  <Input
-                    id="address"
-                    name="address"
-                    type="text"
-                    placeholder="Địa chỉ của bạn"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
+                  <div className="mt-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Home className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <Input
+                      id="address"
+                      name="address"
+                      type="text"
+                      placeholder="Địa chỉ của bạn"
+                      className="pl-10"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
